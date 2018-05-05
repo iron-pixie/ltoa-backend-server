@@ -56,13 +56,17 @@ public class ViolationsController {
     public String ViolationsRequestAdd(@RequestBody String violationList)
     {  try {
         String[] violationArray = new String[8];
+        for(int i = 0; i < 8; i++)
+        {
+            violationArray[i] = "";
+        }
         int string_counter = 0;
         if(violationList != null)
         {
             for(int i = 0; i < violationList.length(); i++)
             {
-                if(violationList.charAt(string_counter) != ';') {
-                    violationArray[string_counter] += violationList.charAt(string_counter);
+                if(violationList.charAt(i) != ';') {
+                    violationArray[string_counter] += Character.toString(violationList.charAt(i));
                 }
                 else
                 {
@@ -84,7 +88,7 @@ public class ViolationsController {
         Statement stmt=con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         ViolationsController obj = (ViolationsController) context.getBean("ViolationBean");
-        String queryString = "insert into Violations(ViolationId, ViolationType, MemberAddress, ResponsibleManager, CreationDate, Fine, Status, Notes)  values (" + this.getViolationId() + ", " + this.getViolationType() + ", " + this.getMemberAddress() + ", " + this.getResponsibleManager() + ", " + this.getCreationDate() + ", " + this.getFine() + ", " + this.getStatus() + ", " + this.getNotes()+ ")";
+        String queryString = "insert into Violations(ViolationId, ViolationType, MemberAddress, ResponsibleManager, CreationDate, Fine, Status, Notes)  values ('" + this.getViolationId() + "', '" + this.getViolationType() + "', '" + this.getMemberAddress() + "', '" + this.getResponsibleManager() + "', '" + this.getCreationDate() + "', '" + this.getFine() + "', '" + this.getStatus() + "', '" + this.getNotes()+ "')";
         stmt.executeUpdate(queryString);
         return violations;
     }
