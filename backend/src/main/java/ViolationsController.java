@@ -2,16 +2,24 @@ package backend;
 
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import java.sql.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
 
 @RestController
 public class ViolationsController {
-   private String violations = "";
+    private String violations = "";
+    private String ViolationId;
+    private String ViolationType;
+    private String MemberAddress;
+    private String ResponsibleManager;
+    private String CreationDate;
+    private String Fine;
+    private String Status;
+    private String Notes;
 
 
     @RequestMapping(value = "/violation/{id}")
@@ -35,6 +43,49 @@ public class ViolationsController {
             violations += ("Status: " + rs.getString(7) + "; ");
             violations += ("Notes: " + rs.getString(8) + "; ");
             violations += "\n ";
+        return violations;
+    }
+    catch(Exception exception)
+    {
+        return exception.toString();
+    }
+    }
+
+    @RequestMapping(value = "/violation/add", method = RequestMethod.POST)
+    @ResponseBody
+    public String ViolationsRequestAdd(@RequestBody String violationList)
+    {  try {
+        String[] violationArray = new String[8];
+        int string_counter = 0;
+        if(violationList != null)
+        {
+            for(int i = 0; i < violationList.length(); i++)
+            {
+                if(violationList.charAt(string_counter) != ';') {
+                    violationArray[string_counter] += violationList.charAt(string_counter);
+                }
+                else
+                {
+                    string_counter++;
+                }
+            }
+                this.setViolationId(violationArray[0]);
+                this.setViolationType(violationArray[1]);
+                this.setMemberAddress(violationArray[2]);
+                this.setResponsibleManager(violationArray[3]);
+                this.setCreationDate(violationArray[4]);
+                this.setFine(violationArray[5]);
+                this.setStatus(violationArray[6]);
+                this.setNotes(violationArray[7]);
+        }
+        violations = "";
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection con = DriverManager.getConnection("jdbc:mysql://backend-test.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/violations", "test", "testtest");
+        Statement stmt=con.createStatement();
+        ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
+        ViolationsController obj = (ViolationsController) context.getBean("ViolationBean");
+        String queryString = "insert into Violations(ViolationId, ViolationType, MemberAddress, ResponsibleManager, CreationDate, Fine, Status, Notes)  values (" + this.getViolationId() + ", " + this.getViolationType() + ", " + this.getMemberAddress() + ", " + this.getResponsibleManager() + ", " + this.getCreationDate() + ", " + this.getFine() + ", " + this.getStatus() + ", " + this.getNotes()+ ")";
+        stmt.executeUpdate(queryString);
         return violations;
     }
     catch(Exception exception)
@@ -78,20 +129,76 @@ public class ViolationsController {
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         StatusController obj = (StatusController) context.getBean("ViolationBean");
         return obj.getStatus();
+    }*/
+
+    public String getCreationDate() {
+        return CreationDate;
     }
 
-    @RequestMapping(value = "/violation/add", method = POST)
-    @ResponseBody
-    public String ViolationsRequest() String id)
-    {
-        ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
-        StatusController obj = (StatusController) context.getBean("ViolationBean");
-        return obj.getStatus();
-    }*/
+    public String getFine() {
+        return Fine;
+    }
+
+    public String getMemberAddress() {
+        return MemberAddress;
+    }
+
+    public String getNotes() {
+        return Notes;
+    }
+
+    public String getResponsibleManager() {
+        return ResponsibleManager;
+    }
+
+    public String getStatus() {
+        return Status;
+    }
+
+    public String getViolationId() {
+        return ViolationId;
+    }
+
+    public String getViolationType() {
+        return ViolationType;
+    }
+
+    public void setCreationDate(String creationDate) {
+        CreationDate = creationDate;
+    }
+
+    public void setFine(String fine) {
+        Fine = fine;
+    }
+
+    public void setMemberAddress(String memberAddress) {
+        MemberAddress = memberAddress;
+    }
+
+    public void setNotes(String notes) {
+        Notes = notes;
+    }
+
+    public void setResponsibleManager(String responsibleManager) {
+        ResponsibleManager = responsibleManager;
+    }
+
+    public void setStatus(String status) {
+        Status = status;
+    }
+
+    public void setViolationId(String violationId) {
+        ViolationId = violationId;
+    }
+
+    public void setViolationType(String violationType) {
+        ViolationType = violationType;
+    }
 
     public void setViolations(String violations){
         this.violations = violations;
     }
+
     public String getViolations(){
         return violations;
     }
