@@ -1,0 +1,5 @@
+spring:
+    profiles: test
+name: test-YAML
+server:
+ port: 5000
