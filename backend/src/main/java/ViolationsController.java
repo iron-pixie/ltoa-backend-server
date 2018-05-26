@@ -120,6 +120,7 @@ public class ViolationsController {
     @RequestMapping(value = "/violation/all")
     public String ViolationsRequestAll()
     {  try {
+        violations = "";
         Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection("jdbc:mysql://backend-test.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/violations", "test", "testtest");
         Statement stmt=con.createStatement();
