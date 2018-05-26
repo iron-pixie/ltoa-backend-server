@@ -90,7 +90,26 @@ public class ViolationsController {
         ViolationsController obj = (ViolationsController) context.getBean("ViolationBean");
         String queryString = "insert into Violations(ViolationId, ViolationType, MemberAddress, ResponsibleManager, CreationDate, Fine, Status, Notes)  values ('" + this.getViolationId() + "', '" + this.getViolationType() + "', '" + this.getMemberAddress() + "', '" + this.getResponsibleManager() + "', '" + this.getCreationDate() + "', '" + this.getFine() + "', '" + this.getStatus() + "', '" + this.getNotes()+ "')";
         stmt.executeUpdate(queryString);
-        return violations;
+        return "Successful addition of row";
+    }
+    catch(Exception exception)
+    {
+        return exception.toString();
+    }
+    }
+
+    @RequestMapping(value = "/violation/{id}", method = RequestMethod.DELETE)
+    public String ViolationsRequestDelete(@PathVariable("id") String id)
+    {  try {
+        violations = "";
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection con = DriverManager.getConnection("jdbc:mysql://backend-test.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/violations", "test", "testtest");
+        Statement stmt=con.createStatement();
+        ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
+        ViolationsController obj = (ViolationsController) context.getBean("ViolationBean");
+        String queryString = "delete * from Violations where ViolationId = " + id;
+        stmt.executeUpdate(queryString);
+        return "Successful Deletion of Row";
     }
     catch(Exception exception)
     {
