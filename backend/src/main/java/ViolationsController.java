@@ -107,7 +107,7 @@ public class ViolationsController {
         Statement stmt=con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         ViolationsController obj = (ViolationsController) context.getBean("ViolationBean");
-        String queryString = "delete * from Violations where ViolationId = " + id;
+        String queryString = "delete from Violations where ViolationId = " + id;
         stmt.executeUpdate(queryString);
         return "Successful Deletion of Row";
     }
