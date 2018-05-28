@@ -1,4 +1,4 @@
-package backend;
+/*package backend;
 
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,27 +9,21 @@ import java.sql.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 @RestController
-public class ViolationsController {
-    private String violations = "";
-    private String ViolationId;
-    private String ViolationType;
-    private String MemberAddress;
+public class WorkOrdersController {
+    private String workorders = "";
+    private String WorkOrderId;
+    private String WorkOrderType;
     private String ResponsibleManager;
     private String CreationDate;
-    private String Fine;
     private String Status;
     private String Notes;
 
 
-    @RequestMapping(value = "/violation/{id}")
-    public JSONArray ViolationsRequest(@PathVariable("id") String id)
+    @RequestMapping(value = "/workorder/{id}")
+    public String ViolationsRequest(@PathVariable("id") String id)
     {  try {
-
+        violations = "";
         Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection("jdbc:mysql://backend-test.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/violations", "test", "testtest");
         Statement stmt=con.createStatement();
@@ -38,17 +32,6 @@ public class ViolationsController {
         String queryString = "select * from Violations where ViolationId = " + id;
         ResultSet rs = stmt.executeQuery(queryString);
         rs.next();
-        JSONArray violation_json = new JSONArray();
-      //  ViolationJson violationJson = new ViolationsJson("Violation");
-        violation_json.add("ViolationId", rs.getString(1));
-        violation_json.add("ViolationType", rs.getString(1));
-        violation_json.add("MemberAddress", rs.getString(1));
-        violation_json.add("ResponsibleManager", rs.getString(1));
-        violation_json.add("CreationDate", rs.getString(1));
-        violation_json.add("Fine", rs.getString(1));
-        violation_json.add("Status", rs.getString(1));
-        violation_json.add("Notes", rs.getString(1));
-        /*
             violations += ("Violation ID: " + rs.getString(1) + "; ");
             violations += ("Violation Type: " + rs.getString(2) + "; ");
             violations += ("Member Address: " + rs.getString(3) + "; ");
@@ -58,8 +41,7 @@ public class ViolationsController {
             violations += ("Status: " + rs.getString(7) + "; ");
             violations += ("Notes: " + rs.getString(8) + "; ");
             violations += "\n ";
-       */
-        return violation_json;
+        return violations;
     }
     catch(Exception exception)
     {
@@ -67,22 +49,22 @@ public class ViolationsController {
     }
     }
 
-    @RequestMapping(value = "/violation/add", method = RequestMethod.POST)
+    @RequestMapping(value = "/workorder/add", method = RequestMethod.POST)
     @ResponseBody
     public String ViolationsRequestAdd(@RequestBody String violationList)
     {  try {
-        String[] violationArray = new String[8];
+        String[] workorderArray = new String[8];
         for(int i = 0; i < 8; i++)
         {
-            violationArray[i] = "";
+            workorderArray[i] = "";
         }
         int string_counter = 0;
-        if(violationList != null)
+        if(workorderList != null)
         {
-            for(int i = 0; i < violationList.length(); i++)
+            for(int i = 0; i < workorderList.length(); i++)
             {
-                if(violationList.charAt(i) != ';') {
-                    violationArray[string_counter] += Character.toString(violationList.charAt(i));
+                if(workorderList.charAt(i) != ';') {
+                    workorderArray[string_counter] += Character.toString(workorderList.charAt(i));
                 }
                 else
                 {
@@ -163,14 +145,6 @@ public class ViolationsController {
         }
     }
 
-   /* @RequestMapping(value = "/violation/delete/{id}", method = GET)
-    public String ViolationsRequest(@PathVariable("id") String id)
-    {
-        ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
-        StatusController obj = (StatusController) context.getBean("ViolationBean");
-        return obj.getStatus();
-    }*/
-
     public String getCreationDate() {
         return CreationDate;
     }
@@ -242,4 +216,4 @@ public class ViolationsController {
     public String getViolations(){
         return violations;
     }
-}
+}*/
