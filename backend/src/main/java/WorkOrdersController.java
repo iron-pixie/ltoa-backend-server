@@ -1,4 +1,4 @@
-package backend;
+/*package backend;
 
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,29 +8,22 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import java.sql.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.*;
 
 @RestController
-public class ViolationsController {
-    private ArrayList<HashMap<String, String>> violation_map_array = new ArrayList();
-    private HashMap<String, String> violation_map = new HashMap<String, String>();
-    private String violations = "";
-    private String ViolationId;
-    private String ViolationType;
-    private String MemberAddress;
+public class WorkOrdersController {
+    private String workorders = "";
+    private String WorkOrderId;
+    private String WorkOrderType;
     private String ResponsibleManager;
     private String CreationDate;
-    private String Fine;
     private String Status;
     private String Notes;
 
 
-    @RequestMapping(value = "/violation/{id}")
-    public HashMap<String, String> ViolationsRequest(@PathVariable("id") String id)
+    @RequestMapping(value = "/workorder/{id}")
+    public String ViolationsRequest(@PathVariable("id") String id)
     {  try {
-
+        violations = "";
         Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection("jdbc:mysql://backend-test.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/violations", "test", "testtest");
         Statement stmt=con.createStatement();
@@ -39,48 +32,67 @@ public class ViolationsController {
         String queryString = "select * from Violations where ViolationId = " + id;
         ResultSet rs = stmt.executeQuery(queryString);
         rs.next();
-        violation_map.put("ViolationId", rs.getString(1));
-        violation_map.put("ViolationType", rs.getString(2));
-        violation_map.put("MemberAddress", rs.getString(3));
-        violation_map.put("ResponsibleManager", rs.getString(4));
-        violation_map.put("CreationDate", rs.getString(5));
-        violation_map.put("Fine", rs.getString(6));
-        violation_map.put("Status", rs.getString(7));
-        violation_map.put("Notes", rs.getString(8));
-        return violation_map;
+            violations += ("Violation ID: " + rs.getString(1) + "; ");
+            violations += ("Violation Type: " + rs.getString(2) + "; ");
+            violations += ("Member Address: " + rs.getString(3) + "; ");
+            violations += ("Responsible Manager: " + rs.getString(4) + "; ");
+            violations += ("Creation Date: " + rs.getString(5) + "; ");
+            violations += ("Fine: " + rs.getString(6) + "; ");
+            violations += ("Status: " + rs.getString(7) + "; ");
+            violations += ("Notes: " + rs.getString(8) + "; ");
+            violations += "\n ";
+        return violations;
     }
     catch(Exception exception)
     {
-        //return exception;
-        return null;
+        return exception.toString();
     }
     }
 
-    @RequestMapping(value = "/violation/add", method = RequestMethod.POST)
+    @RequestMapping(value = "/workorder/add", method = RequestMethod.POST)
     @ResponseBody
-    public String ViolationsRequestAdd(@RequestBody HashMap<String, String> violationList)
+    public String ViolationsRequestAdd(@RequestBody String violationList)
     {  try {
-        this.setViolationId(violationList.get("ViolationId"));
-        this.setViolationType(violationList.get("ViolationType"));
-        this.setMemberAddress(violationList.get("MemberAddress"));
-        this.setResponsibleManager(violationList.get("ResponsibleManager"));
-        this.setCreationDate(violationList.get("CreationDate"));
-        this.setFine(violationList.get("Fine"));
-        this.setStatus(violationList.get("Status"));
-        this.setNotes(violationList.get("Notes"));
+        String[] workorderArray = new String[8];
+        for(int i = 0; i < 8; i++)
+        {
+            workorderArray[i] = "";
+        }
+        int string_counter = 0;
+        if(workorderList != null)
+        {
+            for(int i = 0; i < workorderList.length(); i++)
+            {
+                if(workorderList.charAt(i) != ';') {
+                    workorderArray[string_counter] += Character.toString(workorderList.charAt(i));
+                }
+                else
+                {
+                    string_counter++;
+                }
+            }
+                this.setViolationId(violationArray[0]);
+                this.setViolationType(violationArray[1]);
+                this.setMemberAddress(violationArray[2]);
+                this.setResponsibleManager(violationArray[3]);
+                this.setCreationDate(violationArray[4]);
+                this.setFine(violationArray[5]);
+                this.setStatus(violationArray[6]);
+                this.setNotes(violationArray[7]);
+        }
         violations = "";
         Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection("jdbc:mysql://backend-test.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/violations", "test", "testtest");
-        Statement stmt = con.createStatement();
+        Statement stmt=con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         ViolationsController obj = (ViolationsController) context.getBean("ViolationBean");
-        String queryString = "insert into Violations(ViolationId, ViolationType, MemberAddress, ResponsibleManager, CreationDate, Fine, Status, Notes)  values ('" + this.getViolationId() + "', '" + this.getViolationType() + "', '" + this.getMemberAddress() + "', '" + this.getResponsibleManager() + "', '" + this.getCreationDate() + "', '" + this.getFine() + "', '" + this.getStatus() + "', '" + this.getNotes() + "')";
+        String queryString = "insert into Violations(ViolationId, ViolationType, MemberAddress, ResponsibleManager, CreationDate, Fine, Status, Notes)  values ('" + this.getViolationId() + "', '" + this.getViolationType() + "', '" + this.getMemberAddress() + "', '" + this.getResponsibleManager() + "', '" + this.getCreationDate() + "', '" + this.getFine() + "', '" + this.getStatus() + "', '" + this.getNotes()+ "')";
         stmt.executeUpdate(queryString);
         return "Successful addition of row";
     }
     catch(Exception exception)
     {
-        return null;
+        return exception.toString();
     }
     }
 
@@ -104,7 +116,7 @@ public class ViolationsController {
     }
 
     @RequestMapping(value = "/violation/all")
-    public ArrayList<HashMap<String, String>> ViolationsRequestAll()
+    public String ViolationsRequestAll()
     {  try {
         violations = "";
         Class.forName("com.mysql.jdbc.Driver");
@@ -115,32 +127,23 @@ public class ViolationsController {
         ResultSet rs = stmt.executeQuery("select * from Violations");
         while(rs.next())
         {
-            HashMap<String, String> violation_remap = new HashMap<String, String>();
-            violation_remap.put("ViolationId", rs.getString(1));
-            violation_remap.put("ViolationType", rs.getString(2));
-            violation_remap.put("MemberAddress", rs.getString(3));
-            violation_remap.put("ResponsibleManager", rs.getString(4));
-            violation_remap.put("CreationDate", rs.getString(5));
-            violation_remap.put("Fine", rs.getString(6));
-            violation_remap.put("Status", rs.getString(7));
-            violation_remap.put("Notes", rs.getString(8));
-            violation_map_array.add(violation_remap);
+            violations += ("Violation ID: " + rs.getString(1) + "; ");
+            violations += ("Violation Type: " + rs.getString(2) + "; ");
+            violations += ("Member Address: " + rs.getString(3) + "; ");
+            violations += ("Responsible Manager: " + rs.getString(4) + "; ");
+            violations += ("Creation Date: " + rs.getString(5) + "; ");
+            violations += ("Fine: " + rs.getString(6) + "; ");
+            violations += ("Status: " + rs.getString(7) + "; ");
+            violations += ("Notes: " + rs.getString(8) + "; ");
+            violations += "\n ";
         }
-        return violation_map_array;
+        return violations;
     }
     catch(Exception exception)
         {
-            return null;
+            return exception.toString();
         }
     }
-
-   /* @RequestMapping(value = "/violation/delete/{id}", method = GET)
-    public String ViolationsRequest(@PathVariable("id") String id)
-    {
-        ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
-        StatusController obj = (StatusController) context.getBean("ViolationBean");
-        return obj.getStatus();
-    }*/
 
     public String getCreationDate() {
         return CreationDate;
@@ -213,4 +216,4 @@ public class ViolationsController {
     public String getViolations(){
         return violations;
     }
-}
+}*/
