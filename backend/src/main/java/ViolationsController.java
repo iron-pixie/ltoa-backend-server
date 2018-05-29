@@ -8,13 +8,11 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import java.sql.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.util.HashMap;
 
 @RestController
 public class ViolationsController {
+    private HashMap<String, String> violation_map = new HashMap<>();
     private String violations = "";
     private String ViolationId;
     private String ViolationType;
@@ -27,7 +25,7 @@ public class ViolationsController {
 
 
     @RequestMapping(value = "/violation/{id}")
-    public JSONArray ViolationsRequest(@PathVariable("id") String id)
+    public HashMap<String, String> ViolationsRequest(@PathVariable("id") String id)
     {  try {
 
         Class.forName("com.mysql.jdbc.Driver");
@@ -38,38 +36,26 @@ public class ViolationsController {
         String queryString = "select * from Violations where ViolationId = " + id;
         ResultSet rs = stmt.executeQuery(queryString);
         rs.next();
-        JSONArray violation_json = new JSONArray();
-      //  ViolationJson violationJson = new ViolationsJson("Violation");
-        violation_json.add("ViolationId", rs.getString(1));
-        violation_json.add("ViolationType", rs.getString(1));
-        violation_json.add("MemberAddress", rs.getString(1));
-        violation_json.add("ResponsibleManager", rs.getString(1));
-        violation_json.add("CreationDate", rs.getString(1));
-        violation_json.add("Fine", rs.getString(1));
-        violation_json.add("Status", rs.getString(1));
-        violation_json.add("Notes", rs.getString(1));
-        /*
-            violations += ("Violation ID: " + rs.getString(1) + "; ");
-            violations += ("Violation Type: " + rs.getString(2) + "; ");
-            violations += ("Member Address: " + rs.getString(3) + "; ");
-            violations += ("Responsible Manager: " + rs.getString(4) + "; ");
-            violations += ("Creation Date: " + rs.getString(5) + "; ");
-            violations += ("Fine: " + rs.getString(6) + "; ");
-            violations += ("Status: " + rs.getString(7) + "; ");
-            violations += ("Notes: " + rs.getString(8) + "; ");
-            violations += "\n ";
-       */
-        return violation_json;
+        violation_map.put("ViolationId", rs.getString(1));
+        violation_map.put("ViolationType", rs.getString(2));
+        violation_map.put("MemberAddress", rs.getString(3));
+        violation_map.put("ResponsibleManager", rs.getString(4));
+        violation_map.put("CreationDate", rs.getString(5));
+        violation_map.put("Fine", rs.getString(6));
+        violation_map.put("Status", rs.getString(7));
+        violation_map.put("Notes", rs.getString(8));
+        return violation_map;
     }
     catch(Exception exception)
     {
-        return exception.toString();
+        //return exception;
+        return null;
     }
     }
 
     @RequestMapping(value = "/violation/add", method = RequestMethod.POST)
     @ResponseBody
-    public String ViolationsRequestAdd(@RequestBody String violationList)
+    public String ViolationsRequestAdd(@RequestBody HashMap violationList)
     {  try {
         String[] violationArray = new String[8];
         for(int i = 0; i < 8; i++)
@@ -145,15 +131,14 @@ public class ViolationsController {
         ResultSet rs = stmt.executeQuery("select * from Violations");
         while(rs.next())
         {
-            violations += ("Violation ID: " + rs.getString(1) + "; ");
-            violations += ("Violation Type: " + rs.getString(2) + "; ");
-            violations += ("Member Address: " + rs.getString(3) + "; ");
-            violations += ("Responsible Manager: " + rs.getString(4) + "; ");
-            violations += ("Creation Date: " + rs.getString(5) + "; ");
-            violations += ("Fine: " + rs.getString(6) + "; ");
-            violations += ("Status: " + rs.getString(7) + "; ");
-            violations += ("Notes: " + rs.getString(8) + "; ");
-            violations += "\n ";
+            violation_map.put("ViolationId", rs.getString(1));
+            violation_map.put("ViolationType", rs.getString(2));
+            violation_map.put("MemberAddress", rs.getString(3));
+            violation_map.put("ResponsibleManager", rs.getString(4));
+            violation_map.put("CreationDate", rs.getString(5));
+            violation_map.put("Fine", rs.getString(6));
+            violation_map.put("Status", rs.getString(7));
+            violation_map.put("Notes", rs.getString(8));
         }
         return violations;
     }
