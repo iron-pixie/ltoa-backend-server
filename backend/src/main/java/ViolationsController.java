@@ -9,10 +9,13 @@ import java.sql.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.*;
 
 @RestController
 public class ViolationsController {
-    private HashMap<String, String> violation_map = new HashMap<>();
+    private ArrayList<HashMap<String, String>> violation_map_array = new ArrayList();
+    private HashMap<String, String> violation_map = new HashMap<String, String>();
     private String violations = "";
     private String ViolationId;
     private String ViolationType;
@@ -55,7 +58,7 @@ public class ViolationsController {
 
     @RequestMapping(value = "/violation/add", method = RequestMethod.POST)
     @ResponseBody
-    public String ViolationsRequestAdd(@RequestBody HashMap violationList)
+    public String ViolationsRequestAdd(@RequestBody String violationList)
     {  try {
         String[] violationArray = new String[8];
         for(int i = 0; i < 8; i++)
@@ -120,7 +123,7 @@ public class ViolationsController {
     }
 
     @RequestMapping(value = "/violation/all")
-    public String ViolationsRequestAll()
+    public ArrayList<HashMap<String, String>> ViolationsRequestAll()
     {  try {
         violations = "";
         Class.forName("com.mysql.jdbc.Driver");
@@ -131,20 +134,22 @@ public class ViolationsController {
         ResultSet rs = stmt.executeQuery("select * from Violations");
         while(rs.next())
         {
-            violation_map.put("ViolationId", rs.getString(1));
-            violation_map.put("ViolationType", rs.getString(2));
-            violation_map.put("MemberAddress", rs.getString(3));
-            violation_map.put("ResponsibleManager", rs.getString(4));
-            violation_map.put("CreationDate", rs.getString(5));
-            violation_map.put("Fine", rs.getString(6));
-            violation_map.put("Status", rs.getString(7));
-            violation_map.put("Notes", rs.getString(8));
+            HashMap<String, String> violation_remap = new HashMap<String, String>();
+            violation_remap.put("ViolationId", rs.getString(1));
+            violation_remap.put("ViolationType", rs.getString(2));
+            violation_remap.put("MemberAddress", rs.getString(3));
+            violation_remap.put("ResponsibleManager", rs.getString(4));
+            violation_remap.put("CreationDate", rs.getString(5));
+            violation_remap.put("Fine", rs.getString(6));
+            violation_remap.put("Status", rs.getString(7));
+            violation_remap.put("Notes", rs.getString(8));
+            violation_map_array.add(violation_remap);
         }
-        return violations;
+        return violation_map_array;
     }
     catch(Exception exception)
         {
-            return exception.toString();
+            return null;
         }
     }
 
