@@ -58,48 +58,29 @@ public class ViolationsController {
 
     @RequestMapping(value = "/violation/add", method = RequestMethod.POST)
     @ResponseBody
-    public String ViolationsRequestAdd(@RequestBody String violationList)
+    public String ViolationsRequestAdd(@RequestBody HashMap<String, String> violationList)
     {  try {
-        String[] violationArray = new String[8];
-        for(int i = 0; i < 8; i++)
-        {
-            violationArray[i] = "";
-        }
-        int string_counter = 0;
-        if(violationList != null)
-        {
-            for(int i = 0; i < violationList.length(); i++)
-            {
-                if(violationList.charAt(i) != ';') {
-                    violationArray[string_counter] += Character.toString(violationList.charAt(i));
-                }
-                else
-                {
-                    string_counter++;
-                }
-            }
-                this.setViolationId(violationArray[0]);
-                this.setViolationType(violationArray[1]);
-                this.setMemberAddress(violationArray[2]);
-                this.setResponsibleManager(violationArray[3]);
-                this.setCreationDate(violationArray[4]);
-                this.setFine(violationArray[5]);
-                this.setStatus(violationArray[6]);
-                this.setNotes(violationArray[7]);
-        }
+        this.setViolationId(violationList.get("ViolationId"));
+        this.setViolationType(violationList.get("ViolationType"));
+        this.setMemberAddress(violationList.get("MemberAddress"));
+        this.setResponsibleManager(violationList.get("ResponsibleManager"));
+        this.setCreationDate(violationList.get("CreationDate"));
+        this.setFine(violationList.get("Fine"));
+        this.setStatus(violationList.get("Status"));
+        this.setNotes(violationList.get("Notes"));
         violations = "";
         Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection("jdbc:mysql://backend-test.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/violations", "test", "testtest");
-        Statement stmt=con.createStatement();
+        Statement stmt = con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         ViolationsController obj = (ViolationsController) context.getBean("ViolationBean");
-        String queryString = "insert into Violations(ViolationId, ViolationType, MemberAddress, ResponsibleManager, CreationDate, Fine, Status, Notes)  values ('" + this.getViolationId() + "', '" + this.getViolationType() + "', '" + this.getMemberAddress() + "', '" + this.getResponsibleManager() + "', '" + this.getCreationDate() + "', '" + this.getFine() + "', '" + this.getStatus() + "', '" + this.getNotes()+ "')";
+        String queryString = "insert into Violations(ViolationId, ViolationType, MemberAddress, ResponsibleManager, CreationDate, Fine, Status, Notes)  values ('" + this.getViolationId() + "', '" + this.getViolationType() + "', '" + this.getMemberAddress() + "', '" + this.getResponsibleManager() + "', '" + this.getCreationDate() + "', '" + this.getFine() + "', '" + this.getStatus() + "', '" + this.getNotes() + "')";
         stmt.executeUpdate(queryString);
         return "Successful addition of row";
     }
     catch(Exception exception)
     {
-        return exception.toString();
+        return null;
     }
     }
 
