@@ -1,4 +1,4 @@
-package backend;
+/*package backend;
 
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -130,14 +130,6 @@ public class ViolationsController {
     }
     }
 
-   /* @RequestMapping(value = "/violation/delete/{id}", method = GET)
-    public String ViolationsRequest(@PathVariable("id") String id)
-    {
-        ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
-        StatusController obj = (StatusController) context.getBean("ViolationBean");
-        return obj.getStatus();
-    }*/
-
     public String getCreationDate() {
         return CreationDate;
     }
@@ -209,4 +201,4 @@ public class ViolationsController {
     public String getViolations(){
         return violations;
     }
-}
+}*/

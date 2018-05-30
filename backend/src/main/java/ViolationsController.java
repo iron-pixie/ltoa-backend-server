@@ -51,8 +51,8 @@ public class ViolationsController {
     }
     catch(Exception exception)
     {
-        //return exception;
-        return null;
+        violation_map = ("Error", exception);
+        return violation_map;
     }
     }
 
@@ -80,7 +80,8 @@ public class ViolationsController {
     }
     catch(Exception exception)
     {
-        return null;
+        violationList = ("Error", exception);
+        return violationList;
     }
     }
 
@@ -130,7 +131,8 @@ public class ViolationsController {
     }
     catch(Exception exception)
         {
-            return null;
+            violation_map = ("Error", exception);
+            return violation_map;
         }
     }
 
