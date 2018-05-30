@@ -30,7 +30,7 @@ public class ViolationsController {
     @RequestMapping(value = "/violation/{id}")
     public HashMap<String, String> ViolationsRequest(@PathVariable("id") String id)
     {  try {
-
+        HashMap<String, String> violation_map = new HashMap<String, String>();
         Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection("jdbc:mysql://backend-test.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/violations", "test", "testtest");
         Statement stmt=con.createStatement();
@@ -106,6 +106,8 @@ public class ViolationsController {
     @RequestMapping(value = "/violation/all")
     public ArrayList<HashMap<String, String>> ViolationsRequestAll()
     {  try {
+        ArrayList<HashMap<String, String>> violation_map_array = new ArrayList();
+        HashMap<String, String> violation_map = new HashMap<String, String>();
         violations = "";
         Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection("jdbc:mysql://backend-test.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/violations", "test", "testtest");
