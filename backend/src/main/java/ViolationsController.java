@@ -51,7 +51,7 @@ public class ViolationsController {
     }
     catch(Exception exception)
     {
-        violation_map = ("Error", exception);
+        violation_map.put("Error", exception.toString());
         return violation_map;
     }
     }
@@ -80,8 +80,7 @@ public class ViolationsController {
     }
     catch(Exception exception)
     {
-        violationList = ("Error", exception);
-        return violationList;
+        return exception.toString();
     }
     }
 
@@ -131,8 +130,9 @@ public class ViolationsController {
     }
     catch(Exception exception)
         {
-            violation_map = ("Error", exception);
-            return violation_map;
+            violation_map.put("Error", exception.toString());
+            violation_map_array.add(violation_map);
+            return violation_map_array;
         }
     }
 
