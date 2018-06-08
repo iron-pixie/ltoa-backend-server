@@ -14,6 +14,9 @@ import java.util.HashMap;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.*;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 @RestController
 public class WorkOrdersController {
@@ -57,6 +60,7 @@ public class WorkOrdersController {
     }
     }
 
+    @CrossOrigin(origins = "*")
     @RequestMapping(value = "/work/add", method = RequestMethod.POST)
     @ResponseBody
     public String worksRequestAdd(@RequestBody HashMap<String, String> workList)
@@ -83,6 +87,7 @@ public class WorkOrdersController {
     }
     }
 
+    @CrossOrigin(origins = "*")
     @RequestMapping(value = "/work/{id}", method = RequestMethod.DELETE)
     public String worksRequestDelete(@PathVariable("id") String id)
     {  try {

@@ -15,6 +15,9 @@ import java.util.Date;
 import java.util.ArrayList;
 import java.util.*;
 import java.time.LocalDateTime;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 @RestController
 public class ActionItemsController {
@@ -29,7 +32,6 @@ public class ActionItemsController {
     private String Notes;
     private DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
     private Date date = new Date();
-
 
     @RequestMapping(value = "/action/{id}")
     public HashMap<String, String> ActionsRequest(@PathVariable("id") String id)
@@ -58,6 +60,7 @@ public class ActionItemsController {
     }
     }
 
+    @CrossOrigin(origins = "*")
     @RequestMapping(value = "/action/add", method = RequestMethod.POST)
     @ResponseBody
     public String ActionsRequestAdd(@RequestBody HashMap<String, String> actionList)
@@ -84,6 +87,7 @@ public class ActionItemsController {
     }
     }
 
+    @CrossOrigin(origins = "*")
     @RequestMapping(value = "/action/{id}", method = RequestMethod.DELETE)
     public String ActionssRequestDelete(@PathVariable("id") String id)
     {  try {
