@@ -37,7 +37,7 @@ public class WorkOrdersController {
     public HashMap<String, String> worksRequest(@PathVariable("id") String id)
     {  try {
         Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://backend-test.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/work", "test", "testtest");
+        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/work", "test", "testtest");
         Statement stmt=con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         WorkOrdersController obj = (WorkOrdersController) context.getBean("WorkBean");
@@ -73,7 +73,7 @@ public class WorkOrdersController {
         this.setNotes(workList.get("Notes"));
         works = "";
         Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://backend-test.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/work", "test", "testtest");
+        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/work", "test", "testtest");
         Statement stmt = con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         WorkOrdersController obj = (WorkOrdersController) context.getBean("WorkBean");
@@ -93,7 +93,7 @@ public class WorkOrdersController {
     {  try {
         works = "";
         Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://backend-test.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/work", "test", "testtest");
+        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/work", "test", "testtest");
         Statement stmt=con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         WorkOrdersController obj = (WorkOrdersController) context.getBean("WorkBean");
@@ -112,7 +112,7 @@ public class WorkOrdersController {
     {  try {
         works = "";
         Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://backend-test.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/work", "test", "testtest");
+        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/work", "test", "testtest");
         Statement stmt=con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         WorkOrdersController obj = (WorkOrdersController) context.getBean("WorkBean");

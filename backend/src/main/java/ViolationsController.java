@@ -39,7 +39,7 @@ public class ViolationsController {
     {  try {
         HashMap<String, String> violation_map = new HashMap<String, String>();
         Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://backend-test.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/violations", "test", "testtest");
+        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/violations", "test", "testtest");
         Statement stmt=con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         ViolationsController obj = (ViolationsController) context.getBean("ViolationBean");
@@ -78,7 +78,7 @@ public class ViolationsController {
         this.setNotes(violationList.get("Notes"));
         violations = "";
         Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://backend-test.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/violations", "test", "testtest");
+        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/violations", "test", "testtest");
         Statement stmt = con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         ViolationsController obj = (ViolationsController) context.getBean("ViolationBean");
@@ -98,7 +98,7 @@ public class ViolationsController {
     {  try {
         violations = "";
         Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://backend-test.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/violations", "test", "testtest");
+        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/violations", "test", "testtest");
         Statement stmt=con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         ViolationsController obj = (ViolationsController) context.getBean("ViolationBean");
@@ -119,7 +119,7 @@ public class ViolationsController {
         HashMap<String, String> violation_map = new HashMap<String, String>();
         violations = "";
         Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://backend-test.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/violations", "test", "testtest");
+        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/violations", "test", "testtest");
         Statement stmt=con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         ViolationsController obj = (ViolationsController) context.getBean("ViolationBean");

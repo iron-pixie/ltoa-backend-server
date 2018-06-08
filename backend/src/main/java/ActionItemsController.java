@@ -38,7 +38,7 @@ public class ActionItemsController {
     {  try {
 
         Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://backend-test.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/actions", "test", "testtest");
+        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/actions", "test", "testtest");
         Statement stmt=con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         ActionItemsController obj = (ActionItemsController) context.getBean("ActionBean");
@@ -73,7 +73,7 @@ public class ActionItemsController {
         this.setNotes(actionList.get("Notes"));
         actions = "";
         Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://backend-test.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/actions", "test", "testtest");
+        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/actions", "test", "testtest");
         Statement stmt = con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         ActionItemsController obj = (ActionItemsController) context.getBean("ActionBean");
@@ -93,7 +93,7 @@ public class ActionItemsController {
     {  try {
         actions = "";
         Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://backend-test.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/actions", "test", "testtest");
+        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/actions", "test", "testtest");
         Statement stmt=con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         ActionItemsController obj = (ActionItemsController) context.getBean("ActionBean");
@@ -112,7 +112,7 @@ public class ActionItemsController {
     {  try {
         actions = "";
         Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://backend-test.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/actions", "test", "testtest");
+        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/actions", "test", "testtest");
         Statement stmt=con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         ActionItemsController obj = (ActionItemsController) context.getBean("ActionBean");
