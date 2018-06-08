@@ -13,4 +13,8 @@
         <property name = "violations" value = "violations"/>
     </bean>
 
+    <bean id = "ActionBean" class = "backend.ActionItemsController">
+        <property name = "actions" value = "actions"/>
+    </bean>
+
 </beans>
