@@ -14,6 +14,9 @@ import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.*;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 @RestController
 public class ViolationsController {
@@ -30,7 +33,6 @@ public class ViolationsController {
     private String Notes;
     private DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
     private Date date = new Date();
-
 
     @RequestMapping(value = "/violation/{id}")
     public HashMap<String, String> ViolationsRequest(@PathVariable("id") String id)
@@ -61,6 +63,7 @@ public class ViolationsController {
     }
     }
 
+    @CrossOrigin(origins = "*")
     @RequestMapping(value = "/violation/add", method = RequestMethod.POST)
     @ResponseBody
     public String ViolationsRequestAdd(@RequestBody HashMap<String, String> violationList)
@@ -89,6 +92,7 @@ public class ViolationsController {
     }
     }
 
+    @CrossOrigin(origins = "*")
     @RequestMapping(value = "/violation/{id}", method = RequestMethod.DELETE)
     public String ViolationsRequestDelete(@PathVariable("id") String id)
     {  try {
