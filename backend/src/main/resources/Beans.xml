@@ -14,7 +14,11 @@
     </bean>
 
     <bean id = "ActionBean" class = "backend.ActionItemsController">
-        <property name = "actions" value = "actions"/>
+    <property name = "actions" value = "actions"/>
+</bean>
+
+    <bean id = "WorkBean" class = "backend.WorkOrdersController">
+        <property name = "works" value = "works"/>
     </bean>
 
 </beans>
