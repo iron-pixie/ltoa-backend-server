@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.*;
+import java.time.LocalDateTime;
 
 @RestController
 public class ActionItemsController {
@@ -64,7 +65,7 @@ public class ActionItemsController {
         this.setActionId(actionList.get("ActionId"));
         this.setActionType(actionList.get("ActionType"));
         this.setResponsibleManager(actionList.get("ResponsibleManager"));
-        this.setCreationDate(actionList.get(dateFormat.format(date)));
+        this.setCreationDate(dateFormat.format(date));
         this.setStatus(actionList.get("Status"));
         this.setNotes(actionList.get("Notes"));
         actions = "";

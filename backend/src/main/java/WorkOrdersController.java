@@ -64,7 +64,7 @@ public class WorkOrdersController {
         this.setworkId(workList.get("workId"));
         this.setworkType(workList.get("workType"));
         this.setResponsibleManager(workList.get("ResponsibleManager"));
-        this.setCreationDate(workList.get(dateFormat.format(date)));
+        this.setCreationDate(dateFormat.format(date));
         this.setStatus(workList.get("Status"));
         this.setNotes(workList.get("Notes"));
         works = "";
@@ -73,7 +73,7 @@ public class WorkOrdersController {
         Statement stmt = con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         WorkOrdersController obj = (WorkOrdersController) context.getBean("WorkBean");
-        String queryString = "insert into Work(workId, workType, ResponsibleManager, CreationDate, Status, Notes)  values ('" + this.getworkId() + "', '" + this.getworkType() + "', '" + this.getResponsibleManager() + "', '" + this.getCreationDate() + "', '" + this.getStatus() + "', '" + this.getNotes() + "')";
+        String queryString = "insert into Work(WorkId, WorkType, ResponsibleManager, CreationDate, Status, Notes)  values ('" + this.getworkId() + "', '" + this.getworkType() + "', '" + this.getResponsibleManager() + "', '" + this.getCreationDate() + "', '" + this.getStatus() + "', '" + this.getNotes() + "')";
         stmt.executeUpdate(queryString);
         return "Successful addition of row";
     }
@@ -92,7 +92,7 @@ public class WorkOrdersController {
         Statement stmt=con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         WorkOrdersController obj = (WorkOrdersController) context.getBean("WorkBean");
-        String queryString = "delete from Work where workId = " + id;
+        String queryString = "delete from Work where WorkId = " + id;
         stmt.executeUpdate(queryString);
         return "Successful Deletion of Row";
     }
