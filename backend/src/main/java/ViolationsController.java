@@ -8,8 +8,11 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import java.sql.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.*;
 
 @RestController
@@ -25,6 +28,8 @@ public class ViolationsController {
     private String Fine;
     private String Status;
     private String Notes;
+    private DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    private Date date = new Date();
 
 
     @RequestMapping(value = "/violation/{id}")
@@ -64,7 +69,7 @@ public class ViolationsController {
         this.setViolationType(violationList.get("ViolationType"));
         this.setMemberAddress(violationList.get("MemberAddress"));
         this.setResponsibleManager(violationList.get("ResponsibleManager"));
-        this.setCreationDate(violationList.get("CreationDate"));
+        this.setCreationDate(violationList.get(dateFormat.format(date)));
         this.setFine(violationList.get("Fine"));
         this.setStatus(violationList.get("Status"));
         this.setNotes(violationList.get("Notes"));
