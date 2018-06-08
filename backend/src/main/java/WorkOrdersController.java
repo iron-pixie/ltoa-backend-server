@@ -61,8 +61,8 @@ public class WorkOrdersController {
     @ResponseBody
     public String worksRequestAdd(@RequestBody HashMap<String, String> workList)
     {  try {
-        this.setworkId(workList.get("workId"));
-        this.setworkType(workList.get("workType"));
+        this.setworkId(workList.get("WorkId"));
+        this.setworkType(workList.get("WorkType"));
         this.setResponsibleManager(workList.get("ResponsibleManager"));
         this.setCreationDate(dateFormat.format(date));
         this.setStatus(workList.get("Status"));
