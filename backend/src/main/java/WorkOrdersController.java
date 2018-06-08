@@ -175,12 +175,12 @@ public class WorkOrdersController {
         Status = status;
     }
 
-    public void setworkId(String workId) {
-        workId = workId;
+    public void setworkId(String WorkId) {
+        workId = WorkId;
     }
 
-    public void setworkType(String workType) {
-        workType = workType;
+    public void setworkType(String WorkType) {
+        workType = WorkType;
     }
 
     public void setworks(String works){
