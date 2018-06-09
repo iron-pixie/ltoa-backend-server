@@ -47,10 +47,10 @@ public class ActionItemsController {
         rs.next();
         action_map.put("ActionId", rs.getString(1));
         action_map.put("ActionType", rs.getString(2));
-        action_map.put("ResponsibleManager", rs.getString(4));
-        action_map.put("CreationDate", rs.getString(5));
-        action_map.put("Status", rs.getString(7));
-        action_map.put("Notes", rs.getString(8));
+        action_map.put("ResponsibleManager", rs.getString(3));
+        action_map.put("CreationDate", rs.getString(4));
+        action_map.put("Status", rs.getString(5));
+        action_map.put("Notes", rs.getString(6));
         return action_map;
     }
     catch(Exception exception)

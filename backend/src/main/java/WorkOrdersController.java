@@ -122,10 +122,10 @@ public class WorkOrdersController {
             HashMap<String, String> work_remap = new HashMap<String, String>();
             work_remap.put("workId", rs.getString(1));
             work_remap.put("workType", rs.getString(2));
-            work_remap.put("ResponsibleManager", rs.getString(4));
-            work_remap.put("CreationDate", rs.getString(5));
-            work_remap.put("Status", rs.getString(7));
-            work_remap.put("Notes", rs.getString(8));
+            work_remap.put("ResponsibleManager", rs.getString(3));
+            work_remap.put("CreationDate", rs.getString(4));
+            work_remap.put("Status", rs.getString(5));
+            work_remap.put("Notes", rs.getString(6));
             work_map_array.add(work_remap);
         }
         return work_map_array;
