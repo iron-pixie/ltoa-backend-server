@@ -41,7 +41,7 @@ public class ActionItemsController {
         Statement stmt=con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         ActionItemsController obj = (ActionItemsController) context.getBean("ActionBean");
-        String queryString = "select * from Actions where actionId = " + id;
+        String queryString = "select * from Actions where ActionId = " + id;
         ResultSet rs = stmt.executeQuery(queryString);
         rs.next();
         action_map.put("actionId", rs.getString(1));
@@ -64,19 +64,34 @@ public class ActionItemsController {
     @ResponseBody
     public String actionsRequestAdd(@RequestBody HashMap<String, String> actionList)
     {  try {
-        this.setactionId(actionList.get("actionId"));
         this.setactionType(actionList.get("actionType"));
         this.setResponsibleManager(actionList.get("ResponsibleManager"));
-        this.setCreationDate(actionList.get(dateFormat.format(date)));
+        this.setCreationDate(dateFormat.format(date));
         this.setStatus(actionList.get("Status"));
         this.setNotes(actionList.get("Notes"));
         actions = "";
         Class.forName("com.mysql.jdbc.Driver");
+
+        String ActionReplace = new String();
+        Connection cons = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/MetaData", "test", "testtest");
+        Statement stmts = cons.createStatement();
+        String queryStrings = "select * from MetaData";
+        ResultSet rs = stmts.executeQuery(queryStrings);
+        rs.next();
+        String ActionCounter = rs.getString(1);
+        int ActionCounter_int = Integer.valueOf(ActionCounter);
+        ActionCounter_int++;
+        ActionReplace = Integer.toString(ActionCounter_int);
+        this.setactionId(ActionReplace);
+        Statement stmtss = cons.createStatement();
+        String queryStringss = "update MetaData set ActionCount = "+ ActionReplace + " where meta = meta";
+        stmtss.executeUpdate(queryStringss);
+
         Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/actions", "test", "testtest");
         Statement stmt = con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         ActionItemsController obj = (ActionItemsController) context.getBean("ActionBean");
-        String queryString = "insert into actions(actionId, actionType, ResponsibleManager, CreationDate, Fine, Status, Notes)  values ('" + this.getactionId() + "', '" + this.getactionType() +  "', '" + this.getResponsibleManager() + "', '" + this.getCreationDate() + "', '" + this.getStatus() + "', '" + this.getNotes() + "')";
+        String queryString = "insert into Actions(ActionId, ActionType, ResponsibleManager, CreationDate, Status, Notes)  values ('" + this.getactionId() + "', '" + this.getactionType() +  "', '" + this.getResponsibleManager() + "', '" + this.getCreationDate() + "', '" + this.getStatus() + "', '" + this.getNotes() + "')";
         stmt.executeUpdate(queryString);
         return "Successful addition of row";
     }
@@ -96,7 +111,7 @@ public class ActionItemsController {
         Statement stmt=con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         ActionItemsController obj = (ActionItemsController) context.getBean("ActionBean");
-        String queryString = "delete from Actions where actionId = " + id;
+        String queryString = "delete from Actions where ActionId = " + id;
         stmt.executeUpdate(queryString);
         return "Successful Deletion of Row";
     }
@@ -180,12 +195,12 @@ public class ActionItemsController {
         Status = status;
     }
 
-    public void setactionId(String actionId) {
-        actionId = actionId;
+    public void setactionId(String ActionId) {
+        actionId = ActionId;
     }
 
-    public void setactionType(String actionType) {
-        actionType = actionType;
+    public void setactionType(String ActionType) {
+        actionType = ActionType;
     }
 
     public void setactions(String actions){

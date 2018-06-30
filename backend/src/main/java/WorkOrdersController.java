@@ -41,7 +41,7 @@ public class WorkOrdersController {
         Statement stmt=con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         WorkOrdersController obj = (WorkOrdersController) context.getBean("WorkBean");
-        String queryString = "select * from Work where workId = " + id;
+        String queryString = "select * from Work where WorkId = " + id;
         ResultSet rs = stmt.executeQuery(queryString);
         rs.next();
         work_map.put("workId", rs.getString(1));
@@ -64,19 +64,34 @@ public class WorkOrdersController {
     @ResponseBody
     public String worksRequestAdd(@RequestBody HashMap<String, String> workList)
     {  try {
-        this.setworkId(workList.get("workId"));
         this.setworkType(workList.get("workType"));
         this.setResponsibleManager(workList.get("ResponsibleManager"));
-        this.setCreationDate(workList.get(dateFormat.format(date)));
+        this.setCreationDate(dateFormat.format(date));
         this.setStatus(workList.get("Status"));
         this.setNotes(workList.get("Notes"));
         works = "";
         Class.forName("com.mysql.jdbc.Driver");
+
+        String WorkReplace = new String();
+        Connection cons = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/MetaData", "test", "testtest");
+        Statement stmts = cons.createStatement();
+        String queryStrings = "select * from MetaData";
+        ResultSet rs = stmts.executeQuery(queryStrings);
+        rs.next();
+        String WorkCounter = rs.getString(1);
+        int WorkCounter_int = Integer.valueOf(WorkCounter);
+        WorkCounter_int++;
+        WorkReplace = Integer.toString(WorkCounter_int);
+        this.setworkId(WorkReplace);
+        Statement stmtss = cons.createStatement();
+        String queryStringss = "update MetaData set WorkCount = "+ WorkReplace + " where meta = meta";
+        stmtss.executeUpdate(queryStringss);
+
         Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/work", "test", "testtest");
         Statement stmt = con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         WorkOrdersController obj = (WorkOrdersController) context.getBean("WorkBean");
-        String queryString = "insert into Work(workId, workType, ResponsibleManager, CreationDate, Fine, Status, Notes)  values ('" + this.getworkId() + "', '" + this.getworkType() +  "', '" + this.getResponsibleManager() + "', '" + this.getCreationDate() + "', '" + this.getStatus() + "', '" + this.getNotes() + "')";
+        String queryString = "insert into Work(WorkId, WorkType, ResponsibleManager, CreationDate, Status, Notes)  values ('" + this.getworkId() + "', '" + this.getworkType() +  "', '" + this.getResponsibleManager() + "', '" + this.getCreationDate() + "', '" + this.getStatus() + "', '" + this.getNotes() + "')";
         stmt.executeUpdate(queryString);
         return "Successful addition of row";
     }
@@ -96,7 +111,7 @@ public class WorkOrdersController {
         Statement stmt=con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         WorkOrdersController obj = (WorkOrdersController) context.getBean("WorkBean");
-        String queryString = "delete from Work where workId = " + id;
+        String queryString = "delete from Work where WorkId = " + id;
         stmt.executeUpdate(queryString);
         return "Successful Deletion of Row";
     }
@@ -180,12 +195,12 @@ public class WorkOrdersController {
         Status = status;
     }
 
-    public void setworkId(String workId) {
-        workId = workId;
+    public void setworkId(String WorkId) {
+        workId = WorkId;
     }
 
-    public void setworkType(String workType) {
-        workType = workType;
+    public void setworkType(String WorkType) {
+        workType = WorkType;
     }
 
     public void setworks(String works){
