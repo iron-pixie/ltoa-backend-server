@@ -19,6 +19,13 @@ public class StatusController {
         return obj.getStatus();
     }
 
+    @RequestMapping("/mailtest")
+    public String EmailRequest()
+    {
+        EmailServices emailServices = new EmailServices();
+        return emailservices.sendTestMail();
+    }
+
     public void setStatus(String status){
         this.status  = status;
     }
