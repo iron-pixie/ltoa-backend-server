@@ -84,6 +84,8 @@ public class ViolationsController {
         ViolationsController obj = (ViolationsController) context.getBean("ViolationBean");
         String queryString = "insert into Violations(ViolationId, ViolationType, MemberAddress, ResponsibleManager, CreationDate, Fine, Status, Notes)  values ('" + this.getViolationId() + "', '" + this.getViolationType() + "', '" + this.getMemberAddress() + "', '" + this.getResponsibleManager() + "', '" + this.getCreationDate() + "', '" + this.getFine() + "', '" + this.getStatus() + "', '" + this.getNotes() + "')";
         stmt.executeUpdate(queryString);
+        EmailServices emailServices = new EmailServices();
+        emailServices.sendMailAccess(("New Violation, ID: " + this.getViolationId()), violationList.toString());
         return "Successful addition of row";
     }
     catch(Exception exception)

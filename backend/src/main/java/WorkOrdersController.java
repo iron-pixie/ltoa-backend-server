@@ -79,6 +79,8 @@ public class WorkOrdersController {
         WorkOrdersController obj = (WorkOrdersController) context.getBean("WorkBean");
         String queryString = "insert into Work(WorkId, WorkType, ResponsibleManager, CreationDate, Status, Notes)  values ('" + this.getworkId() + "', '" + this.getworkType() + "', '" + this.getResponsibleManager() + "', '" + this.getCreationDate() + "', '" + this.getStatus() + "', '" + this.getNotes() + "')";
         stmt.executeUpdate(queryString);
+        EmailServices emailServices = new EmailServices();
+        emailServices.sendMailAccess(("New Work Order, ID: " + this.getworkId()), workList.toString());
         return "Successful addition of row";
     }
     catch(Exception exception)
