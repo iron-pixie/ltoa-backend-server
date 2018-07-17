@@ -68,20 +68,36 @@ public class ViolationsController {
     @ResponseBody
     public String ViolationsRequestAdd(@RequestBody HashMap<String, String> violationList)
     {  try {
-        this.setViolationId(violationList.get("ViolationId"));
+
         this.setViolationType(violationList.get("ViolationType"));
         this.setMemberAddress(violationList.get("MemberAddress"));
         this.setResponsibleManager(violationList.get("ResponsibleManager"));
-        this.setCreationDate(violationList.get(dateFormat.format(date)));
+        this.setCreationDate(dateFormat.format(date));
         this.setFine(violationList.get("Fine"));
         this.setStatus(violationList.get("Status"));
         this.setNotes(violationList.get("Notes"));
         violations = "";
         Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/violations", "test", "testtest");
-        Statement stmt = con.createStatement();
+        String ViolationReplace = new String();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         ViolationsController obj = (ViolationsController) context.getBean("ViolationBean");
+
+        Connection cons = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/MetaData", "test", "testtest");
+        Statement stmts = cons.createStatement();
+        String queryStrings = "select * from MetaData";
+        ResultSet rs = stmts.executeQuery(queryStrings);
+        rs.next();
+        String ViolationCounter = rs.getString(1);
+        int ViolationCounter_int = Integer.valueOf(ViolationCounter);
+        ViolationCounter_int++;
+        ViolationReplace = Integer.toString(ViolationCounter_int);
+        this.setViolationId(ViolationReplace);
+        Statement stmtss = cons.createStatement();
+        String queryStringss = "update MetaData set ViolationCount = "+ ViolationReplace + " where meta = meta";
+        stmtss.executeUpdate(queryStringss);
+
+        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/violations", "test", "testtest");
+        Statement stmt = con.createStatement();
         String queryString = "insert into Violations(ViolationId, ViolationType, MemberAddress, ResponsibleManager, CreationDate, Fine, Status, Notes)  values ('" + this.getViolationId() + "', '" + this.getViolationType() + "', '" + this.getMemberAddress() + "', '" + this.getResponsibleManager() + "', '" + this.getCreationDate() + "', '" + this.getFine() + "', '" + this.getStatus() + "', '" + this.getNotes() + "')";
         stmt.executeUpdate(queryString);
         EmailServices emailServices = new EmailServices();

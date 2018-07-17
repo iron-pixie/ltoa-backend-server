@@ -11,8 +11,8 @@ import javax.servlet.http.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
-import java.util.Date;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.*;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -32,31 +32,30 @@ public class WorkOrdersController {
     private DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
     private Date date = new Date();
 
-
     @RequestMapping(value = "/work/{id}")
     public HashMap<String, String> worksRequest(@PathVariable("id") String id)
     {  try {
+        HashMap<String, String> work_map = new HashMap<String, String>();
         Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/work", "test", "testtest");
         Statement stmt=con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         WorkOrdersController obj = (WorkOrdersController) context.getBean("WorkBean");
-        String queryString = "select * from Work where workId = " + id;
+        String queryString = "select * from Work where WorkId = " + id;
         ResultSet rs = stmt.executeQuery(queryString);
         rs.next();
         work_map.put("workId", rs.getString(1));
         work_map.put("workType", rs.getString(2));
-        work_map.put("ResponsibleManager", rs.getString(4));
-        work_map.put("CreationDate", rs.getString(5));
-        work_map.put("Status", rs.getString(7));
-        work_map.put("Notes", rs.getString(8));
+        work_map.put("ResponsibleManager", rs.getString(3));
+        work_map.put("CreationDate", rs.getString(4));
+        work_map.put("Status", rs.getString(5));
+        work_map.put("Notes", rs.getString(6));
         return work_map;
     }
     catch(Exception exception)
     {
-        HashMap<String, String> exception_map = new HashMap<String, String>();
-        exception_map.put(exception.toString(), "Log");
-        return  exception_map;
+        work_map.put("Error", exception.toString());
+        return work_map;
     }
     }
 
@@ -65,19 +64,34 @@ public class WorkOrdersController {
     @ResponseBody
     public String worksRequestAdd(@RequestBody HashMap<String, String> workList)
     {  try {
-        this.setworkId(workList.get("WorkId"));
-        this.setworkType(workList.get("WorkType"));
+        this.setworkType(workList.get("workType"));
         this.setResponsibleManager(workList.get("ResponsibleManager"));
         this.setCreationDate(dateFormat.format(date));
         this.setStatus(workList.get("Status"));
         this.setNotes(workList.get("Notes"));
         works = "";
         Class.forName("com.mysql.jdbc.Driver");
+
+        String WorkReplace = new String();
+        Connection cons = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/MetaData", "test", "testtest");
+        Statement stmts = cons.createStatement();
+        String queryStrings = "select * from MetaData";
+        ResultSet rs = stmts.executeQuery(queryStrings);
+        rs.next();
+        String WorkCounter = rs.getString(1);
+        int WorkCounter_int = Integer.valueOf(WorkCounter);
+        WorkCounter_int++;
+        WorkReplace = Integer.toString(WorkCounter_int);
+        this.setworkId(WorkReplace);
+        Statement stmtss = cons.createStatement();
+        String queryStringss = "update MetaData set WorkCount = "+ WorkReplace + " where meta = meta";
+        stmtss.executeUpdate(queryStringss);
+
         Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/work", "test", "testtest");
         Statement stmt = con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         WorkOrdersController obj = (WorkOrdersController) context.getBean("WorkBean");
-        String queryString = "insert into Work(WorkId, WorkType, ResponsibleManager, CreationDate, Status, Notes)  values ('" + this.getworkId() + "', '" + this.getworkType() + "', '" + this.getResponsibleManager() + "', '" + this.getCreationDate() + "', '" + this.getStatus() + "', '" + this.getNotes() + "')";
+        String queryString = "insert into Work(WorkId, WorkType, ResponsibleManager, CreationDate, Status, Notes)  values ('" + this.getworkId() + "', '" + this.getworkType() +  "', '" + this.getResponsibleManager() + "', '" + this.getCreationDate() + "', '" + this.getStatus() + "', '" + this.getNotes() + "')";
         stmt.executeUpdate(queryString);
         EmailServices emailServices = new EmailServices();
         emailServices.sendMailAccess(("New Work Order, ID: " + this.getworkId()), workList.toString());
@@ -112,6 +126,8 @@ public class WorkOrdersController {
     @RequestMapping(value = "/work/all")
     public ArrayList<HashMap<String, String>> worksRequestAll()
     {  try {
+        ArrayList<HashMap<String, String>> work_map_array = new ArrayList();
+        HashMap<String, String> work_map = new HashMap<String, String>();
         works = "";
         Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/work", "test", "testtest");
@@ -124,23 +140,22 @@ public class WorkOrdersController {
             HashMap<String, String> work_remap = new HashMap<String, String>();
             work_remap.put("workId", rs.getString(1));
             work_remap.put("workType", rs.getString(2));
-            work_remap.put("ResponsibleManager", rs.getString(4));
-            work_remap.put("CreationDate", rs.getString(5));
-            work_remap.put("Status", rs.getString(7));
-            work_remap.put("Notes", rs.getString(8));
+            work_remap.put("ResponsibleManager", rs.getString(3));
+            work_remap.put("CreationDate", rs.getString(4));
+            work_remap.put("Status", rs.getString(5));
+            work_remap.put("Notes", rs.getString(6));
             work_map_array.add(work_remap);
         }
         return work_map_array;
     }
     catch(Exception exception)
     {
-        ArrayList<HashMap<String, String>> exception_map_array = new ArrayList();
-        HashMap<String, String> exception_map = new HashMap<String, String>();
-        exception_map.put(exception.toString(), "Log");
-        exception_map_array.add(exception_map);
-        return  exception_map_array;
+        work_map.put("Error", exception.toString());
+        work_map_array.add(work_map);
+        return work_map_array;
     }
     }
+
 
     public String getCreationDate() {
         return CreationDate;

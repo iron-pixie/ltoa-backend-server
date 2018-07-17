@@ -11,10 +11,9 @@ import javax.servlet.http.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
-import java.util.Date;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.*;
-import java.time.LocalDateTime;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -24,8 +23,8 @@ public class ActionItemsController {
     private ArrayList<HashMap<String, String>> action_map_array = new ArrayList();
     private HashMap<String, String> action_map = new HashMap<String, String>();
     private String actions = "";
-    private String ActionId;
-    private String ActionType;
+    private String actionId;
+    private String actionType;
     private String ResponsibleManager;
     private String CreationDate;
     private String Status;
@@ -34,9 +33,9 @@ public class ActionItemsController {
     private Date date = new Date();
 
     @RequestMapping(value = "/action/{id}")
-    public HashMap<String, String> ActionsRequest(@PathVariable("id") String id)
+    public HashMap<String, String> actionsRequest(@PathVariable("id") String id)
     {  try {
-
+        HashMap<String, String> action_map = new HashMap<String, String>();
         Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/actions", "test", "testtest");
         Statement stmt=con.createStatement();
@@ -45,39 +44,54 @@ public class ActionItemsController {
         String queryString = "select * from Actions where ActionId = " + id;
         ResultSet rs = stmt.executeQuery(queryString);
         rs.next();
-        action_map.put("ActionId", rs.getString(1));
-        action_map.put("ActionType", rs.getString(2));
-        action_map.put("ResponsibleManager", rs.getString(4));
-        action_map.put("CreationDate", rs.getString(5));
-        action_map.put("Status", rs.getString(7));
-        action_map.put("Notes", rs.getString(8));
+        action_map.put("actionId", rs.getString(1));
+        action_map.put("actionType", rs.getString(2));
+        action_map.put("ResponsibleManager", rs.getString(3));
+        action_map.put("CreationDate", rs.getString(4));
+        action_map.put("Status", rs.getString(5));
+        action_map.put("Notes", rs.getString(6));
         return action_map;
     }
     catch(Exception exception)
     {
-        //return exception;
-        return null;
+        action_map.put("Error", exception.toString());
+        return action_map;
     }
     }
 
     @CrossOrigin(origins = "*")
     @RequestMapping(value = "/action/add", method = RequestMethod.POST)
     @ResponseBody
-    public String ActionsRequestAdd(@RequestBody HashMap<String, String> actionList)
+    public String actionsRequestAdd(@RequestBody HashMap<String, String> actionList)
     {  try {
-        this.setActionId(actionList.get("ActionId"));
-        this.setActionType(actionList.get("ActionType"));
+        this.setactionType(actionList.get("actionType"));
         this.setResponsibleManager(actionList.get("ResponsibleManager"));
         this.setCreationDate(dateFormat.format(date));
         this.setStatus(actionList.get("Status"));
         this.setNotes(actionList.get("Notes"));
         actions = "";
         Class.forName("com.mysql.jdbc.Driver");
+
+        String ActionReplace = new String();
+        Connection cons = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/MetaData", "test", "testtest");
+        Statement stmts = cons.createStatement();
+        String queryStrings = "select * from MetaData";
+        ResultSet rs = stmts.executeQuery(queryStrings);
+        rs.next();
+        String ActionCounter = rs.getString(1);
+        int ActionCounter_int = Integer.valueOf(ActionCounter);
+        ActionCounter_int++;
+        ActionReplace = Integer.toString(ActionCounter_int);
+        this.setactionId(ActionReplace);
+        Statement stmtss = cons.createStatement();
+        String queryStringss = "update MetaData set ActionCount = "+ ActionReplace + " where meta = meta";
+        stmtss.executeUpdate(queryStringss);
+
         Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/actions", "test", "testtest");
         Statement stmt = con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         ActionItemsController obj = (ActionItemsController) context.getBean("ActionBean");
-        String queryString = "insert into Actions(ActionId, ActionType, ResponsibleManager, CreationDate, Status, Notes)  values ('" + this.getActionId() + "', '" + this.getActionType() + "', '" + this.getResponsibleManager() + "', '" + this.getCreationDate() + "', '" + this.getStatus() + "', '" + this.getNotes() + "')";
+        String queryString = "insert into Actions(ActionId, ActionType, ResponsibleManager, CreationDate, Status, Notes)  values ('" + this.getactionId() + "', '" + this.getactionType() +  "', '" + this.getResponsibleManager() + "', '" + this.getCreationDate() + "', '" + this.getStatus() + "', '" + this.getNotes() + "')";
         stmt.executeUpdate(queryString);
 
         EmailServices emailServices = new EmailServices();
@@ -92,7 +106,7 @@ public class ActionItemsController {
 
     @CrossOrigin(origins = "*")
     @RequestMapping(value = "/action/{id}", method = RequestMethod.DELETE)
-    public String ActionssRequestDelete(@PathVariable("id") String id)
+    public String actionsRequestDelete(@PathVariable("id") String id)
     {  try {
         actions = "";
         Class.forName("com.mysql.jdbc.Driver");
@@ -111,8 +125,10 @@ public class ActionItemsController {
     }
 
     @RequestMapping(value = "/action/all")
-    public ArrayList<HashMap<String, String>> ActionsRequestAll()
+    public ArrayList<HashMap<String, String>> actionsRequestAll()
     {  try {
+        ArrayList<HashMap<String, String>> action_map_array = new ArrayList();
+        HashMap<String, String> action_map = new HashMap<String, String>();
         actions = "";
         Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/actions", "test", "testtest");
@@ -123,21 +139,24 @@ public class ActionItemsController {
         while(rs.next())
         {
             HashMap<String, String> action_remap = new HashMap<String, String>();
-            action_remap.put("ActionId", rs.getString(1));
-            action_remap.put("ActionType", rs.getString(2));
-            action_remap.put("ResponsibleManager", rs.getString(4));
-            action_remap.put("CreationDate", rs.getString(5));
-            action_remap.put("Status", rs.getString(7));
-            action_remap.put("Notes", rs.getString(8));
+            action_remap.put("actionId", rs.getString(1));
+            action_remap.put("actionType", rs.getString(2));
+            action_remap.put("ResponsibleManager", rs.getString(3));
+            action_remap.put("CreationDate", rs.getString(4));
+            action_remap.put("Status", rs.getString(5));
+            action_remap.put("Notes", rs.getString(6));
             action_map_array.add(action_remap);
         }
         return action_map_array;
     }
     catch(Exception exception)
     {
-        return null;
+        action_map.put("Error", exception.toString());
+        action_map_array.add(action_map);
+        return action_map_array;
     }
     }
+
 
     public String getCreationDate() {
         return CreationDate;
@@ -155,12 +174,12 @@ public class ActionItemsController {
         return Status;
     }
 
-    public String getActionId() {
-        return ActionId;
+    public String getactionId() {
+        return actionId;
     }
 
-    public String getActionType() {
-        return ActionType;
+    public String getactionType() {
+        return actionType;
     }
 
     public void setCreationDate(String creationDate) {
@@ -179,19 +198,19 @@ public class ActionItemsController {
         Status = status;
     }
 
-    public void setActionId(String actionId) {
-        ActionId = actionId;
+    public void setactionId(String ActionId) {
+        actionId = ActionId;
     }
 
-    public void setActionType(String actionType) {
-        ActionType = actionType;
+    public void setactionType(String ActionType) {
+        actionType = ActionType;
     }
 
-    public void setActions(String actions){
+    public void setactions(String actions){
         this.actions = actions;
     }
 
-    public String getActions(){
+    public String getactions(){
         return actions;
     }
 }
