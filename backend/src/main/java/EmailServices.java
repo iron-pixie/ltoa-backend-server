@@ -57,7 +57,7 @@ public class EmailServices {
         return "Message Not Sent";
     }
 
-    public String sendMailAccess(String Subject, String Message) {
+    public String sendMailAccess(String Subject, String SendMessage) {
         Properties props = System.getProperties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
@@ -96,7 +96,7 @@ public class EmailServices {
             message.setSubject(Subject);
 
             // Now set the actual message
-            message.setText(Message);
+            message.setText(SendMessage);
 
             Transport.send(message);
 

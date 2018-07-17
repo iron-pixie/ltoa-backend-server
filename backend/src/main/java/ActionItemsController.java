@@ -80,8 +80,8 @@ public class ActionItemsController {
         String queryString = "insert into Actions(ActionId, ActionType, ResponsibleManager, CreationDate, Status, Notes)  values ('" + this.getActionId() + "', '" + this.getActionType() + "', '" + this.getResponsibleManager() + "', '" + this.getCreationDate() + "', '" + this.getStatus() + "', '" + this.getNotes() + "')";
         stmt.executeUpdate(queryString);
 
-        EmalServices emalServices = new EmailServices();
-        emalServices.sendMailAccess(("New Action Item, ID: " + this.getActionId()), actionList.toString());
+        EmailServices emailServices = new EmailServices();
+        emailServices.sendMailAccess(("New Action Item, ID: " + this.getActionId()), actionList.toString());
         return "Successful addition of row";
     }
     catch(Exception exception)
