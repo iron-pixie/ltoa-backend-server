@@ -23,7 +23,7 @@ public class StatusController {
     public String EmailRequest()
     {
         EmailServices emailServices = new EmailServices();
-        return emailservices.sendTestMail();
+        return emailServices.sendTestMail();
     }
 
     public void setStatus(String status){
