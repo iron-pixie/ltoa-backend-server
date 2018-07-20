@@ -32,6 +32,7 @@ public class ActionItemsController {
     private DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
     private Date date = new Date();
 
+    @CrossOrigin(origins = "*")
     @RequestMapping(value = "/action/{id}")
     public HashMap<String, String> actionsRequest(@PathVariable("id") String id)
     {  try {
@@ -124,6 +125,7 @@ public class ActionItemsController {
     }
     }
 
+    @CrossOrigin(origins = "*")
     @RequestMapping(value = "/action/all")
     public ArrayList<HashMap<String, String>> actionsRequestAll()
     {  try {

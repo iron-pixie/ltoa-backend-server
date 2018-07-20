@@ -19,7 +19,6 @@ public class StatusController {
         return obj.getStatus();
     }
 
-    @CrossOrigin(origins = "*")
     @RequestMapping("/mailtest")
     public String EmailRequest()
     {
