@@ -95,7 +95,7 @@ public class ActionItemsController {
         stmt.executeUpdate(queryString);
 
         EmailServices emailServices = new EmailServices();
-        emailServices.sendMailAccess(("New Action Item, ID: " + this.getActionId()), actionList.toString());
+        emailServices.sendMailAccess(("New Action Item, ID: " + this.getactionId()), actionList.toString());
         return "Successful addition of row";
     }
     catch(Exception exception)
