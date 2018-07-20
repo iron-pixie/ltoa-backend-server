@@ -32,6 +32,7 @@ public class ActionItemsController {
     private DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
     private Date date = new Date();
 
+    @CrossOrigin(origins = "*")
     @RequestMapping(value = "/action/{id}")
     public HashMap<String, String> actionsRequest(@PathVariable("id") String id)
     {  try {
@@ -95,7 +96,7 @@ public class ActionItemsController {
         stmt.executeUpdate(queryString);
 
         EmailServices emailServices = new EmailServices();
-        emailServices.sendMailAccess(("New Action Item, ID: " + this.getActionId()), actionList.toString());
+        emailServices.sendMailAccess(("New Action Item, ID: " + this.getactionId()), actionList.toString());
         return "Successful addition of row";
     }
     catch(Exception exception)
@@ -124,6 +125,7 @@ public class ActionItemsController {
     }
     }
 
+    @CrossOrigin(origins = "*")
     @RequestMapping(value = "/action/all")
     public ArrayList<HashMap<String, String>> actionsRequestAll()
     {  try {

@@ -34,6 +34,7 @@ public class ViolationsController {
     private DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
     private Date date = new Date();
 
+    @CrossOrigin(origins = "*")
     @RequestMapping(value = "/violation/{id}")
     public HashMap<String, String> ViolationsRequest(@PathVariable("id") String id)
     {  try {
@@ -130,6 +131,7 @@ public class ViolationsController {
     }
     }
 
+    @CrossOrigin(origins = "*")
     @RequestMapping(value = "/violation/all")
     public ArrayList<HashMap<String, String>> ViolationsRequestAll()
     {  try {

@@ -23,18 +23,23 @@ public class LoginServiceController {
 
     @CrossOrigin(origins = "*")
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public String LoginRequest(@RequestBody HashMap<String, String> loginData)
+    public HashMap<String, String> LoginRequest(@RequestBody HashMap<String, String> loginData)
     {
+        HashMap<String, String> login_map = new HashMap<String, String>();
+        HashMap<String, String> login_response = new HashMap<String, String>();
         if(!(loginData.get("username").equals("user1")))
         {
-            return "ERROR 0001: Username not foud!";
+            login_response.put("Auth", "ERROR: Username not Found!");
+            return login_response;
         }
         else if(!(loginData.get("password").equals("passw0rd")))
         {
-            return "ERROR 0002: Invalid Password";
+            login_response.put("Auth", "ERROR: Invalid Password!");
+            return login_response;
         }
 
-        return "Login Successful!";
+        login_response.put("Auth", "Success");
+        return login_response;
     }
 
 }

@@ -32,6 +32,7 @@ public class WorkOrdersController {
     private DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
     private Date date = new Date();
 
+    @CrossOrigin(origins = "*")
     @RequestMapping(value = "/work/{id}")
     public HashMap<String, String> worksRequest(@PathVariable("id") String id)
     {  try {
@@ -123,6 +124,7 @@ public class WorkOrdersController {
     }
     }
 
+    @CrossOrigin(origins = "*")
     @RequestMapping(value = "/work/all")
     public ArrayList<HashMap<String, String>> worksRequestAll()
     {  try {
