@@ -64,6 +64,37 @@ public class ViolationsController {
     }
     }
 
+
+    @CrossOrigin(origins = "*")
+    @RequestMapping(value = "/violation/{manager}")
+    public HashMap<String, String> ViolationsRequest(@PathVariable("manager") String id)
+    {  try {
+        HashMap<String, String> violation_map = new HashMap<String, String>();
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/violations", "test", "testtest");
+        Statement stmt=con.createStatement();
+        ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
+        ViolationsController obj = (ViolationsController) context.getBean("ViolationBean");
+        String queryString = "select * from Violations where ResponsibleManager = " + manager;
+        ResultSet rs = stmt.executeQuery(queryString);
+        rs.next();
+        violation_map.put("ViolationId", rs.getString(1));
+        violation_map.put("ViolationType", rs.getString(2));
+        violation_map.put("MemberAddress", rs.getString(3));
+        violation_map.put("ResponsibleManager", rs.getString(4));
+        violation_map.put("CreationDate", rs.getString(5));
+        violation_map.put("Fine", rs.getString(6));
+        violation_map.put("Status", rs.getString(7));
+        violation_map.put("Notes", rs.getString(8));
+        return violation_map;
+    }
+    catch(Exception exception)
+    {
+        violation_map.put("Error", exception.toString());
+        return violation_map;
+    }
+    }
+
     @CrossOrigin(origins = "*")
     @RequestMapping(value = "/violation/add", method = RequestMethod.POST)
     @ResponseBody
