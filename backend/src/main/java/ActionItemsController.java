@@ -106,6 +106,35 @@ public class ActionItemsController {
     }
 
     @CrossOrigin(origins = "*")
+    @RequestMapping(value = "/action/{manager}")
+    public HashMap<String, String> actionsRequest(@PathVariable("manager") String id)
+    {  try {
+        HashMap<String, String> action_map = new HashMap<String, String>();
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/actions", "test", "testtest");
+        Statement stmt=con.createStatement();
+        ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
+        ActionItemsController obj = (ActionItemsController) context.getBean("ActionBean");
+        String queryString = "select * from Actions ResponsibleManager = " + manager;
+        ResultSet rs = stmt.executeQuery(queryString);
+        rs.next();
+        action_map.put("actionId", rs.getString(1));
+        action_map.put("actionType", rs.getString(2));
+        action_map.put("ResponsibleManager", rs.getString(3));
+        action_map.put("CreationDate", rs.getString(4));
+        action_map.put("Status", rs.getString(5));
+        action_map.put("Notes", rs.getString(6));
+        return action_map;
+    }
+    catch(Exception exception)
+    {
+        action_map.put("Error", exception.toString());
+        return action_map;
+    }
+    }
+
+
+    @CrossOrigin(origins = "*")
     @RequestMapping(value = "/action/{id}", method = RequestMethod.DELETE)
     public String actionsRequestDelete(@PathVariable("id") String id)
     {  try {

@@ -61,6 +61,34 @@ public class WorkOrdersController {
     }
 
     @CrossOrigin(origins = "*")
+    @RequestMapping(value = "/work/{manager}")
+    public HashMap<String, String> worksRequestManager(@PathVariable("manager") String id)
+    {  try {
+        HashMap<String, String> work_map = new HashMap<String, String>();
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/work", "test", "testtest");
+        Statement stmt=con.createStatement();
+        ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
+        WorkOrdersController obj = (WorkOrdersController) context.getBean("WorkBean");
+        String queryString = "select * from Work where ResponsibleManager = " + manager;
+        ResultSet rs = stmt.executeQuery(queryString);
+        rs.next();
+        work_map.put("workId", rs.getString(1));
+        work_map.put("workType", rs.getString(2));
+        work_map.put("ResponsibleManager", rs.getString(3));
+        work_map.put("CreationDate", rs.getString(4));
+        work_map.put("Status", rs.getString(5));
+        work_map.put("Notes", rs.getString(6));
+        return work_map;
+    }
+    catch(Exception exception)
+    {
+        work_map.put("Error", exception.toString());
+        return work_map;
+    }
+    }
+
+    @CrossOrigin(origins = "*")
     @RequestMapping(value = "/work/add", method = RequestMethod.POST)
     @ResponseBody
     public String worksRequestAdd(@RequestBody HashMap<String, String> workList)
