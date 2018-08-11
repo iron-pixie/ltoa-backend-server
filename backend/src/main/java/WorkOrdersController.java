@@ -61,30 +61,37 @@ public class WorkOrdersController {
     }
 
     @CrossOrigin(origins = "*")
-    @RequestMapping(value = "/work/{manager}")
-    public HashMap<String, String> worksRequestManager(@PathVariable("manager") String id)
+    @RequestMapping(value = "/work/manager-search", method = RequestMethod.POST)
+    @ResponseBody
+    public ArrayList<HashMap<String, String>> workRequestManager(@RequestBody HashMap<String, String> manager)
     {  try {
+        ArrayList<HashMap<String, String>> work_map_array = new ArrayList();
         HashMap<String, String> work_map = new HashMap<String, String>();
         Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/work", "test", "testtest");
         Statement stmt=con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         WorkOrdersController obj = (WorkOrdersController) context.getBean("WorkBean");
-        String queryString = "select * from Work where ResponsibleManager = " + manager;
+        String queryString = "select * from Work where ResponsibleManager = '" + manager.get("ResponsibleManager") + "'";
         ResultSet rs = stmt.executeQuery(queryString);
-        rs.next();
-        work_map.put("workId", rs.getString(1));
-        work_map.put("workType", rs.getString(2));
-        work_map.put("ResponsibleManager", rs.getString(3));
-        work_map.put("CreationDate", rs.getString(4));
-        work_map.put("Status", rs.getString(5));
-        work_map.put("Notes", rs.getString(6));
-        return work_map;
+        while(rs.next())
+        {
+            HashMap<String, String> work_remap = new HashMap<String, String>();
+            work_remap.put("workId", rs.getString(1));
+            work_remap.put("workType", rs.getString(2));
+            work_remap.put("ResponsibleManager", rs.getString(3));
+            work_remap.put("CreationDate", rs.getString(4));
+            work_remap.put("Status", rs.getString(5));
+            work_remap.put("Notes", rs.getString(6));
+            work_map_array.add(work_remap);
+        }
+        return work_map_array;
     }
     catch(Exception exception)
     {
         work_map.put("Error", exception.toString());
-        return work_map;
+        work_map_array.add(work_map);
+        return work_map_array;
     }
     }
 

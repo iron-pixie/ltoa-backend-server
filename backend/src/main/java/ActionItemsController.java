@@ -106,30 +106,37 @@ public class ActionItemsController {
     }
 
     @CrossOrigin(origins = "*")
-    @RequestMapping(value = "/action/{manager}")
-    public HashMap<String, String> actionsRequest(@PathVariable("manager") String id)
+    @RequestMapping(value = "/action/manager-search", method = RequestMethod.POST)
+    @ResponseBody
+    public ArrayList<HashMap<String, String>> actionsRequestManager(@RequestBody HashMap<String, String> manager)
     {  try {
+        ArrayList<HashMap<String, String>> action_map_array = new ArrayList();
         HashMap<String, String> action_map = new HashMap<String, String>();
         Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/actions", "test", "testtest");
         Statement stmt=con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         ActionItemsController obj = (ActionItemsController) context.getBean("ActionBean");
-        String queryString = "select * from Actions ResponsibleManager = " + manager;
+        String queryString = "select * from Actions where ResponsibleManager = '" + manager.get("ResponsibleManager") + "'";
         ResultSet rs = stmt.executeQuery(queryString);
-        rs.next();
-        action_map.put("actionId", rs.getString(1));
-        action_map.put("actionType", rs.getString(2));
-        action_map.put("ResponsibleManager", rs.getString(3));
-        action_map.put("CreationDate", rs.getString(4));
-        action_map.put("Status", rs.getString(5));
-        action_map.put("Notes", rs.getString(6));
-        return action_map;
+        while(rs.next())
+        {
+            HashMap<String, String> action_remap = new HashMap<String, String>();
+            action_remap.put("actionId", rs.getString(1));
+            action_remap.put("actionType", rs.getString(2));
+            action_remap.put("ResponsibleManager", rs.getString(3));
+            action_remap.put("CreationDate", rs.getString(4));
+            action_remap.put("Status", rs.getString(5));
+            action_remap.put("Notes", rs.getString(6));
+            action_map_array.add(action_remap);
+        }
+        return action_map_array;
     }
     catch(Exception exception)
     {
         action_map.put("Error", exception.toString());
-        return action_map;
+        action_map_array.add(action_map);
+        return action_map_array;
     }
     }
 
