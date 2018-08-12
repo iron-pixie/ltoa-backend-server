@@ -96,7 +96,10 @@ public class ActionItemsController {
         stmt.executeUpdate(queryString);
 
         EmailServices emailServices = new EmailServices();
-        emailServices.sendMailAccess(("New Action Item, ID: " + this.getactionId()), actionList.toString());
+        String emailMessage = "A new Action Item has been created with ID: " + this.getactionId() + ". The type of Action item is " + this.getactionType() + ". The Action Item ticket was created at";
+        emailMessage += this.getCreationDate() + ". The current status of this ticket is: " + this.getStatus() + ". The manager responsible is ";
+        emailMessage += this.getResponsibleManager() + ". Additional Notes: " + this.getNotes();
+        emailServices.sendMailAccess(("New Action Item, ID: " + this.getactionId()), emailMessage);
         return "Successful addition of row";
     }
     catch(Exception exception)

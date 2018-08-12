@@ -77,7 +77,7 @@ public class ViolationsController {
         Statement stmt=con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         ViolationsController obj = (ViolationsController) context.getBean("ViolationBean");
-        String queryString = "select * from Violations where ResponsibleManager = " + manager;
+        String queryString = "select * from Violations where ResponsibleManager = '" + manager.get("ResponsibleManager") + "'";
         ResultSet rs = stmt.executeQuery(queryString);
         while(rs.next())
         {
@@ -105,7 +105,7 @@ public class ViolationsController {
     @CrossOrigin(origins = "*")
     @RequestMapping(value = "/violation/member-search", method = RequestMethod.POST)
     @ResponseBody
-    public ArrayList<HashMap<String, String>> workRequestManager(@RequestBody HashMap<String, String> address)
+    public ArrayList<HashMap<String, String>> workRequestAddress(@RequestBody HashMap<String, String> address)
     {  try {
         ArrayList<HashMap<String, String>> work_map_array = new ArrayList();
         HashMap<String, String> work_map = new HashMap<String, String>();
@@ -114,7 +114,7 @@ public class ViolationsController {
         Statement stmt=con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         ViolationsController obj = (ViolationsController) context.getBean("ViolationBean");
-        String queryString = "select * from Violations where MemberAddress = " + address;
+        String queryString = "select * from Violations where MemberAddress = '" + address.get("MemberAddress") + "'";
         ResultSet rs = stmt.executeQuery(queryString);
         while(rs.next())
         {
@@ -178,7 +178,10 @@ public class ViolationsController {
         String queryString = "insert into Violations(ViolationId, ViolationType, MemberAddress, ResponsibleManager, CreationDate, Fine, Status, Notes)  values ('" + this.getViolationId() + "', '" + this.getViolationType() + "', '" + this.getMemberAddress() + "', '" + this.getResponsibleManager() + "', '" + this.getCreationDate() + "', '" + this.getFine() + "', '" + this.getStatus() + "', '" + this.getNotes() + "')";
         stmt.executeUpdate(queryString);
         EmailServices emailServices = new EmailServices();
-        emailServices.sendMailAccess(("New Violation, ID: " + this.getViolationId()), violationList.toString());
+        String emailMessage = "A new Violation has been created with ID: " + this.getViolationId() + "The violation is a " + this.getViolationType() + ". This violation is for the residence at " + this.getMemberAddress() ". The violation ticket was created at";
+        emailMessage += this.getCreationDate() + ". The fine for the violation is: " + this.getFine() + ". The current status of this violation ticket is: " + this.getStatus() + ". The manager responsible is ";
+        emailMessage += this.getResponsibleManager() + ". Additional Notes: " + this.getNotes();
+        emailServices.sendMailAccess(("New Violation, ID: " + this.getViolationId()), emailMessage);
         return "Successful addition of row";
     }
     catch(Exception exception)

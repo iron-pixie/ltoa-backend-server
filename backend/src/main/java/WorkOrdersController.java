@@ -130,7 +130,10 @@ public class WorkOrdersController {
         String queryString = "insert into Work(WorkId, WorkType, ResponsibleManager, CreationDate, Status, Notes)  values ('" + this.getworkId() + "', '" + this.getworkType() +  "', '" + this.getResponsibleManager() + "', '" + this.getCreationDate() + "', '" + this.getStatus() + "', '" + this.getNotes() + "')";
         stmt.executeUpdate(queryString);
         EmailServices emailServices = new EmailServices();
-        emailServices.sendMailAccess(("New Work Order, ID: " + this.getworkId()), workList.toString());
+        String emailMessage = "A new Work orderhas been created with ID: " + this.getworkId() + ". The type of Work Order is " + this.getworkType() + ". The ticket was created at";
+        emailMessage += this.getCreationDate() + ". The current status of this ticket is: " + this.getStatus() + ". The manager responsible is ";
+        emailMessage += this.getResponsibleManager() + ". Additional Notes: " + this.getNotes();
+        emailServices.sendMailAccess(("New Work Order, ID: " + this.getworkId()), emailMessage);
         return "Successful addition of row";
     }
     catch(Exception exception)
