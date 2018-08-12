@@ -178,7 +178,7 @@ public class ViolationsController {
         String queryString = "insert into Violations(ViolationId, ViolationType, MemberAddress, ResponsibleManager, CreationDate, Fine, Status, Notes)  values ('" + this.getViolationId() + "', '" + this.getViolationType() + "', '" + this.getMemberAddress() + "', '" + this.getResponsibleManager() + "', '" + this.getCreationDate() + "', '" + this.getFine() + "', '" + this.getStatus() + "', '" + this.getNotes() + "')";
         stmt.executeUpdate(queryString);
         EmailServices emailServices = new EmailServices();
-        String emailMessage = "A new Violation has been created with ID: " + this.getViolationId() + "The violation is a " + this.getViolationType() + ". This violation is for the residence at " + this.getMemberAddress() ". The violation ticket was created at";
+        String emailMessage = "A new Violation has been created with ID: " + this.getViolationId() + "The violation is a " + this.getViolationType() + ". This violation is for the residence at " + this.getMemberAddress() + ". The violation ticket was created at ";
         emailMessage += this.getCreationDate() + ". The fine for the violation is: " + this.getFine() + ". The current status of this violation ticket is: " + this.getStatus() + ". The manager responsible is ";
         emailMessage += this.getResponsibleManager() + ". Additional Notes: " + this.getNotes();
         emailServices.sendMailAccess(("New Violation, ID: " + this.getViolationId()), emailMessage);
