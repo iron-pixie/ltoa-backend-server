@@ -103,34 +103,42 @@ public class ViolationsController {
     }
 
     @CrossOrigin(origins = "*")
-    @RequestMapping(value = "/violation/{manager}")
-    public HashMap<String, String> ViolationsRequestManager(@PathVariable("manager") String manager)
+    @RequestMapping(value = "/violation/member-search", method = RequestMethod.POST)
+    @ResponseBody
+    public ArrayList<HashMap<String, String>> workRequestManager(@RequestBody HashMap<String, String> address)
     {  try {
-        HashMap<String, String> violation_map = new HashMap<String, String>();
+        ArrayList<HashMap<String, String>> work_map_array = new ArrayList();
+        HashMap<String, String> work_map = new HashMap<String, String>();
         Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/violations", "test", "testtest");
         Statement stmt=con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         ViolationsController obj = (ViolationsController) context.getBean("ViolationBean");
-        String queryString = "select * from Violations where ResponsibleManager = " + manager;
+        String queryString = "select * from Violations where MemberAddress = " + address;
         ResultSet rs = stmt.executeQuery(queryString);
-        rs.next();
-        violation_map.put("ViolationId", rs.getString(1));
-        violation_map.put("ViolationType", rs.getString(2));
-        violation_map.put("MemberAddress", rs.getString(3));
-        violation_map.put("ResponsibleManager", rs.getString(4));
-        violation_map.put("CreationDate", rs.getString(5));
-        violation_map.put("Fine", rs.getString(6));
-        violation_map.put("Status", rs.getString(7));
-        violation_map.put("Notes", rs.getString(8));
-        return violation_map;
+        while(rs.next())
+        {
+            HashMap<String, String> violation_remap = new HashMap<String, String>();
+            violation_remap.put("ViolationId", rs.getString(1));
+            violation_remap.put("ViolationType", rs.getString(2));
+            violation_remap.put("MemberAddress", rs.getString(3));
+            violation_remap.put("ResponsibleManager", rs.getString(4));
+            violation_remap.put("CreationDate", rs.getString(5));
+            violation_remap.put("Fine", rs.getString(6));
+            violation_remap.put("Status", rs.getString(7));
+            violation_remap.put("Notes", rs.getString(8));
+            violation_map_array.add(violation_remap);
+        }
+        return violation_map_array;
     }
     catch(Exception exception)
     {
         violation_map.put("Error", exception.toString());
-        return violation_map;
+        violation_map_array.add(violation_map);
+        return violation_map_array;
     }
     }
+
 
     @CrossOrigin(origins = "*")
     @RequestMapping(value = "/violation/add", method = RequestMethod.POST)
