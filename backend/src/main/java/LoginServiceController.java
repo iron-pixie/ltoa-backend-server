@@ -45,7 +45,7 @@ public class LoginServiceController {
         login_map.put("userLevel", rs.getString(2));
         login_map.put("userName", rs.getString(3));
         login_map.put("password", rs.getString(4));
-        if(!(loginData.get("password").equals("passw0rd")))
+        if(!(loginData.get("password").equals(login_map.get("password"))))
         {
             login_response.put("Auth", "ERROR: Invalid Password!");
             return login_response;
@@ -62,10 +62,10 @@ public class LoginServiceController {
     public String LoginAdd(@RequestBody HashMap<String, String> loginList)
     {  try {
 
-        this.setName(violationList.get("ViolationType"));
-        this.setUserLevel(violationList.get("MemberAddress"));
-        this.setUserName(violationList.get("ResponsibleManager"));
-        this.setPassword(dateFormat.format(date));
+        this.setName(loginList.get("Name"));
+        this.setUserLevel(loginList.get("userLevel"));
+        this.setUserName(loginList.get("userName"));
+        this.setPassword(loginList.get("Password"));
 
         Class.forName("com.mysql.jdbc.Driver");
         Connection cons = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/managers", "test", "testtest");
