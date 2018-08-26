@@ -41,7 +41,7 @@ public class LoginServiceController {
             Class.forName("com.mysql.jdbc.Driver");
             Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/managers", "test", "testtest");
             Statement stmt = con.createStatement();
-            String queryString = "select * from Managers where userName = " + loginData.get("username");
+            String queryString = "select * from Managers where userName = '" + loginData.get("username") + "'";
             ResultSet rs = stmt.executeQuery(queryString);
             rs.next();
             login_map.put("Name", rs.getString(1));
