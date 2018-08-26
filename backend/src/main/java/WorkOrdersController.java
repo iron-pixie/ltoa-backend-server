@@ -61,6 +61,41 @@ public class WorkOrdersController {
     }
 
     @CrossOrigin(origins = "*")
+    @RequestMapping(value = "/work/manager-search", method = RequestMethod.POST)
+    @ResponseBody
+    public ArrayList<HashMap<String, String>> workRequestManager(@RequestBody HashMap<String, String> manager)
+    {  try {
+        ArrayList<HashMap<String, String>> work_map_array = new ArrayList();
+        HashMap<String, String> work_map = new HashMap<String, String>();
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/work", "test", "testtest");
+        Statement stmt=con.createStatement();
+        ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
+        WorkOrdersController obj = (WorkOrdersController) context.getBean("WorkBean");
+        String queryString = "select * from Work where ResponsibleManager = '" + manager.get("ResponsibleManager") + "'";
+        ResultSet rs = stmt.executeQuery(queryString);
+        while(rs.next())
+        {
+            HashMap<String, String> work_remap = new HashMap<String, String>();
+            work_remap.put("workId", rs.getString(1));
+            work_remap.put("workType", rs.getString(2));
+            work_remap.put("ResponsibleManager", rs.getString(3));
+            work_remap.put("CreationDate", rs.getString(4));
+            work_remap.put("Status", rs.getString(5));
+            work_remap.put("Notes", rs.getString(6));
+            work_map_array.add(work_remap);
+        }
+        return work_map_array;
+    }
+    catch(Exception exception)
+    {
+        work_map.put("Error", exception.toString());
+        work_map_array.add(work_map);
+        return work_map_array;
+    }
+    }
+
+    @CrossOrigin(origins = "*")
     @RequestMapping(value = "/work/add", method = RequestMethod.POST)
     @ResponseBody
     public String worksRequestAdd(@RequestBody HashMap<String, String> workList)
@@ -95,7 +130,10 @@ public class WorkOrdersController {
         String queryString = "insert into Work(WorkId, WorkType, ResponsibleManager, CreationDate, Status, Notes)  values ('" + this.getworkId() + "', '" + this.getworkType() +  "', '" + this.getResponsibleManager() + "', '" + this.getCreationDate() + "', '" + this.getStatus() + "', '" + this.getNotes() + "')";
         stmt.executeUpdate(queryString);
         EmailServices emailServices = new EmailServices();
-        emailServices.sendMailAccess(("New Work Order, ID: " + this.getworkId()), workList.toString());
+        String emailMessage = "A new Work orderhas been created with ID: " + this.getworkId() + ". The type of Work Order is " + this.getworkType() + ". The ticket was created at ";
+        emailMessage += this.getCreationDate() + ". The current status of this ticket is: " + this.getStatus() + ". The manager responsible is ";
+        emailMessage += this.getResponsibleManager() + ". Additional Notes: " + this.getNotes();
+        emailServices.sendMailAccess(("New Work Order, ID: " + this.getworkId()), emailMessage);
         return "Successful addition of row";
     }
     catch(Exception exception)
