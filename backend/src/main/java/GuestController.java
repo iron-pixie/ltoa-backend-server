@@ -20,11 +20,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 @RestController
 public class GuestController {
-    String guestName;
-    String residentAdress;
-    String carModel;
-    String carMake;
-    String guests;
+    private String guestName;
+    private String residentAddress;
+    private String carModel;
+    private String carMake;
+    private String guests;
 
     @CrossOrigin(origins = "*")
     @RequestMapping(value = "/guest/all")
@@ -72,10 +72,10 @@ public class GuestController {
         Class.forName("com.mysql.jdbc.Driver");
         Connection cons = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/guests", "test", "testtest");
         Statement stmts = cons.createStatement();
-        String queryString = "insert into Guests(guestName, residentAddress, carModel, carMake)  values ('" + this.getGuestName() + "', '" + this.getResidentAdress() + "', '" + this.getCarModel() + "', '" + this.getCarMake() + "')";
+        String queryString = "insert into Guests(guestName, residentAddress, carModel, carMake)  values ('" + this.getGuestName() + "', '" + this.getResidentAddress() + "', '" + this.getCarModel() + "', '" + this.getCarMake() + "')";
         stmts.executeUpdate(queryString);
         EmailServices emailServices = new EmailServices();
-        String emailMessage = "A new guest has been added with name: " + this.getGuestName() + "They are associated with address: " + this.getResidentAdress();
+        String emailMessage = "A new guest has been added with name: " + this.getGuestName() + "They are associated with address: " + this.getResidentAddress();
         emailServices.sendMailAccess(("New Guest, Name: " + this.getGuestName()), emailMessage);
         return "Successful addition of row";
     }
@@ -90,9 +90,9 @@ public class GuestController {
         return this.guestName;
     }
 
-    private String getResidentAdress()
+    private String getResidentAddress()
     {
-        return this.residentAdress;
+        return this.residentAddress;
     }
 
     private String getCarModel()
@@ -110,9 +110,9 @@ public class GuestController {
         this.guestName = GuestName;
     }
 
-    private void setResidentAdress(String ResidentAdress)
+    private void setResidentAddress(String ResidentAddress)
     {
-        this.residentAdress = ResidentAdress;
+        this.residentAddress = ResidentAddress;
     }
 
     private void setCarModel(String CarModel)
