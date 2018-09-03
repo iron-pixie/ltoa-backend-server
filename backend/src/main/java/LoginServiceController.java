@@ -78,7 +78,7 @@ public class LoginServiceController {
         this.setPassword(loginList.get("Password"));
 
         Class.forName("com.mysql.jdbc.Driver");
-        Connection cons = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/managers", "test", "testtest");
+        Connection cons = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/users", "test", "testtest");
         Statement stmts = cons.createStatement();
         String queryString = "insert into Users(Name, userLevel, userName, password)  values ('" + this.getName() + "', '" + this.getUserLevel() + "', '" + this.getUserName() + "', '" + this.getPassword() + "')";
         stmts.executeUpdate(queryString);
