@@ -39,9 +39,9 @@ public class LoginServiceController {
         HashMap<String, String> login_response = new HashMap<String, String>();
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/managers", "test", "testtest");
+            Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/users", "test", "testtest");
             Statement stmt = con.createStatement();
-            String queryString = "select * from Managers where userName = '" + loginData.get("username") + "'";
+            String queryString = "select * from Users where userName = '" + loginData.get("username") + "'";
             ResultSet rs = stmt.executeQuery(queryString);
             rs.next();
             login_map.put("Name", rs.getString(1));
@@ -80,11 +80,11 @@ public class LoginServiceController {
         Class.forName("com.mysql.jdbc.Driver");
         Connection cons = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/managers", "test", "testtest");
         Statement stmts = cons.createStatement();
-        String queryString = "insert into Managers(Name, userLevel, userName, password)  values ('" + this.getName() + "', '" + this.getUserLevel() + "', '" + this.getUserName() + "', '" + this.getPassword() + "')";
+        String queryString = "insert into Users(Name, userLevel, userName, password)  values ('" + this.getName() + "', '" + this.getUserLevel() + "', '" + this.getUserName() + "', '" + this.getPassword() + "')";
         stmts.executeUpdate(queryString);
         EmailServices emailServices = new EmailServices();
-        String emailMessage = "A new manager has been added with name: " + this.getName() + "The manager has a user level of:  " + this.getUserLevel();
-        emailServices.sendMailAccess(("New Manager, Name: " + this.getName()), emailMessage);
+        String emailMessage = "A new user has been added with name: " + this.getName() + "The user has a level of:  " + this.getUserLevel();
+        emailServices.sendMailAccess(("New User, Name: " + this.getName()), emailMessage);
         return "Successful addition of row";
     }
     catch(Exception exception)
