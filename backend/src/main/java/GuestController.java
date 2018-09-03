@@ -20,6 +20,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 @RestController
 public class GuestController {
+    private ArrayList<HashMap<String, String>> guest_map_array = new ArrayList();
+    private HashMap<String, String> guest_map = new HashMap<String, String>();
     private String guestName;
     private String residentAddress;
     private String carModel;
@@ -32,12 +34,9 @@ public class GuestController {
     {  try {
         ArrayList<HashMap<String, String>> guest_map_array = new ArrayList();
         HashMap<String, String> guest_map = new HashMap<String, String>();
-        guests = "";
         Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/guests", "test", "testtest");
         Statement stmt=con.createStatement();
-        ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
-        GuestController obj = (GuestController) context.getBean("GuestBean");
         ResultSet rs = stmt.executeQuery("select * from Guests");
         while(rs.next())
         {
@@ -65,7 +64,7 @@ public class GuestController {
     {  try {
 
         this.setGuestName(guestList.get("guestName"));
-        this.setResidentAdress(guestList.get("residentAdress"));
+        this.setResidentAddress(guestList.get("residentAddress"));
         this.setCarModel(guestList.get("carMake"));
         this.setCarMake(guestList.get("carModel"));
 
