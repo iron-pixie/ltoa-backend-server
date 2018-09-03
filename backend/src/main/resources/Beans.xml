@@ -21,4 +21,8 @@
         <property name = "works" value = "works"/>
     </bean>
 
+    <bean id = "GuestBean" class = "backend.GuestController">
+        <property name = "guests" value = "guests"/>
+    </bean>
+
 </beans>
