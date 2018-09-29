@@ -143,9 +143,8 @@ public class ViolationsController {
     @CrossOrigin(origins = "*")
     @RequestMapping(value = "/violation/add", method = RequestMethod.POST)
     @ResponseBody
-    public String ViolationsRequestAdd(@RequestBody HashMap<String, String> violationList)
+    public HashMap<String, String> ViolationsRequestAdd(@RequestBody HashMap<String, String> violationList)
     {  try {
-
         this.setViolationType(violationList.get("ViolationType"));
         this.setMemberAddress(violationList.get("MemberAddress"));
         this.setResponsibleManager(violationList.get("ResponsibleManager"));
@@ -182,11 +181,15 @@ public class ViolationsController {
         emailMessage += this.getCreationDate() + ". The fine for the violation is: " + this.getFine() + ". The current status of this violation ticket is: " + this.getStatus() + ". The manager responsible is ";
         emailMessage += this.getResponsibleManager() + ". Additional Notes: " + this.getNotes();
         emailServices.sendMailAccess(("New Violation, ID: " + this.getViolationId()), emailMessage);
-        return "Successful addition of row";
+        HashMap<String, String> violation_map = new HashMap<String, String>();
+        violation_map.put("id", this.getViolationId());
+        return violation_map;
     }
     catch(Exception exception)
     {
-        return exception.toString();
+        HashMap<String, String> violation_map = new HashMap<String, String>();
+        violation_map.put("Error", "Row not created");
+        return violation_map;
     }
     }
 
@@ -245,14 +248,6 @@ public class ViolationsController {
             return violation_map_array;
         }
     }
-
-   /* @RequestMapping(value = "/violation/delete/{id}", method = GET)
-    public String ViolationsRequest(@PathVariable("id") String id)
-    {
-        ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
-        StatusController obj = (StatusController) context.getBean("ViolationBean");
-        return obj.getStatus();
-    }*/
 
     public String getCreationDate() {
         return CreationDate;

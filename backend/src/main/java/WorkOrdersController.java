@@ -98,7 +98,7 @@ public class WorkOrdersController {
     @CrossOrigin(origins = "*")
     @RequestMapping(value = "/work/add", method = RequestMethod.POST)
     @ResponseBody
-    public String worksRequestAdd(@RequestBody HashMap<String, String> workList)
+    public HashMap<String, String> worksRequestAdd(@RequestBody HashMap<String, String> workList)
     {  try {
         this.setworkType(workList.get("workType"));
         this.setResponsibleManager(workList.get("ResponsibleManager"));
@@ -134,11 +134,15 @@ public class WorkOrdersController {
         emailMessage += this.getCreationDate() + ". The current status of this ticket is: " + this.getStatus() + ". The manager responsible is ";
         emailMessage += this.getResponsibleManager() + ". Additional Notes: " + this.getNotes();
         emailServices.sendMailAccess(("New Work Order, ID: " + this.getworkId()), emailMessage);
-        return "Successful addition of row";
+        HashMap<String, String> work_map = new HashMap<String, String>();
+        work_map.put("id", this.getworkId());
+        return work_map;
     }
     catch(Exception exception)
     {
-        return exception.toString();
+        HashMap<String, String> work_map = new HashMap<String, String>();
+        work_map.put("Error", "Row not created");
+        return work_map;
     }
     }
 

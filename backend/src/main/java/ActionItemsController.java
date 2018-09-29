@@ -63,7 +63,7 @@ public class ActionItemsController {
     @CrossOrigin(origins = "*")
     @RequestMapping(value = "/action/add", method = RequestMethod.POST)
     @ResponseBody
-    public String actionsRequestAdd(@RequestBody HashMap<String, String> actionList)
+    public HashMap<String, String> actionsRequestAdd(@RequestBody HashMap<String, String> actionList)
     {  try {
         this.setactionType(actionList.get("actionType"));
         this.setResponsibleManager(actionList.get("ResponsibleManager"));
@@ -100,11 +100,15 @@ public class ActionItemsController {
         emailMessage += this.getCreationDate() + ". The current status of this ticket is: " + this.getStatus() + ". The manager responsible is ";
         emailMessage += this.getResponsibleManager() + ". Additional Notes: " + this.getNotes();
         emailServices.sendMailAccess(("New Action Item, ID: " + this.getactionId()), emailMessage);
-        return "Successful addition of row";
+        HashMap<String, String> action_map = new HashMap<String, String>();
+        action_map.put("id", getactionId());
+        return action_map;
     }
     catch(Exception exception)
     {
-        return exception.toString();
+        HashMap<String, String> action_map = new HashMap<String, String>();
+        action_map.put("Error", "Row not created");
+        return action_map;
     }
     }
 
