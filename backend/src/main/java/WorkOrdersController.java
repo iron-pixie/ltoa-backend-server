@@ -114,7 +114,7 @@ public class WorkOrdersController {
         String queryStrings = "select * from MetaData";
         ResultSet rs = stmts.executeQuery(queryStrings);
         rs.next();
-        String WorkCounter = rs.getString(1);
+        String WorkCounter = rs.getString(3);
         int WorkCounter_int = Integer.valueOf(WorkCounter);
         WorkCounter_int++;
         WorkReplace = Integer.toString(WorkCounter_int);
@@ -134,14 +134,14 @@ public class WorkOrdersController {
         emailMessage += this.getCreationDate() + ". The current status of this ticket is: " + this.getStatus() + ". The manager responsible is ";
         emailMessage += this.getResponsibleManager() + ". Additional Notes: " + this.getNotes();
         emailServices.sendMailAccess(("New Work Order, ID: " + this.getworkId()), emailMessage);
-        HashMap<String, String> work_map = new HashMap<String, String>();
-        work_map.put("id", this.getworkId());
-        return work_map;
+        HashMap<String, String> work_maps = new HashMap<String, String>();
+        work_maps.put("id", this.getworkId());
+        return work_maps;
     }
     catch(Exception exception)
     {
         HashMap<String, String> work_map = new HashMap<String, String>();
-        work_map.put("Error", "Row not created");
+        work_map.put("Error", "Row not created: "+exception);
         return work_map;
     }
     }

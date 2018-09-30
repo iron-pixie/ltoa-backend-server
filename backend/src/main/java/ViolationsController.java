@@ -181,14 +181,14 @@ public class ViolationsController {
         emailMessage += this.getCreationDate() + ". The fine for the violation is: " + this.getFine() + ". The current status of this violation ticket is: " + this.getStatus() + ". The manager responsible is ";
         emailMessage += this.getResponsibleManager() + ". Additional Notes: " + this.getNotes();
         emailServices.sendMailAccess(("New Violation, ID: " + this.getViolationId()), emailMessage);
-        HashMap<String, String> violation_map = new HashMap<String, String>();
-        violation_map.put("id", this.getViolationId());
-        return violation_map;
+        HashMap<String, String> violation_maps = new HashMap<String, String>();
+        violation_maps.put("id", this.getViolationId());
+        return violation_maps;
     }
     catch(Exception exception)
     {
         HashMap<String, String> violation_map = new HashMap<String, String>();
-        violation_map.put("Error", "Row not created");
+        violation_map.put("Error", "Row not created: "+exception);
         return violation_map;
     }
     }

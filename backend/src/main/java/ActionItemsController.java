@@ -79,7 +79,7 @@ public class ActionItemsController {
         String queryStrings = "select * from MetaData";
         ResultSet rs = stmts.executeQuery(queryStrings);
         rs.next();
-        String ActionCounter = rs.getString(1);
+        String ActionCounter = rs.getString(2);
         int ActionCounter_int = Integer.valueOf(ActionCounter);
         ActionCounter_int++;
         ActionReplace = Integer.toString(ActionCounter_int);
@@ -100,14 +100,14 @@ public class ActionItemsController {
         emailMessage += this.getCreationDate() + ". The current status of this ticket is: " + this.getStatus() + ". The manager responsible is ";
         emailMessage += this.getResponsibleManager() + ". Additional Notes: " + this.getNotes();
         emailServices.sendMailAccess(("New Action Item, ID: " + this.getactionId()), emailMessage);
-        HashMap<String, String> action_map = new HashMap<String, String>();
-        action_map.put("id", getactionId());
-        return action_map;
+        HashMap<String, String> action_maps = new HashMap<String, String>();
+        action_maps.put("id", getactionId());
+        return action_maps;
     }
     catch(Exception exception)
     {
         HashMap<String, String> action_map = new HashMap<String, String>();
-        action_map.put("Error", "Row not created");
+        action_map.put("Error", "Row not created: "+exception);
         return action_map;
     }
     }
