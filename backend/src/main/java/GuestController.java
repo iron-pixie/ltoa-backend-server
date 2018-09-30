@@ -23,6 +23,9 @@ public class GuestController {
     private ArrayList<HashMap<String, String>> guest_map_array = new ArrayList();
     private HashMap<String, String> guest_map = new HashMap<String, String>();
     private String guestName;
+    private String residentName;
+    private String allowedStartTime;
+    private String allowedEndTime
     private String residentAddress;
     private String carModel;
     private String carMake;
