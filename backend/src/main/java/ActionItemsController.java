@@ -63,7 +63,7 @@ public class ActionItemsController {
     @CrossOrigin(origins = "*")
     @RequestMapping(value = "/action/add", method = RequestMethod.POST)
     @ResponseBody
-    public String actionsRequestAdd(@RequestBody HashMap<String, String> actionList)
+    public HashMap<String, String> actionsRequestAdd(@RequestBody HashMap<String, String> actionList)
     {  try {
         this.setactionType(actionList.get("actionType"));
         this.setResponsibleManager(actionList.get("ResponsibleManager"));
@@ -79,7 +79,7 @@ public class ActionItemsController {
         String queryStrings = "select * from MetaData";
         ResultSet rs = stmts.executeQuery(queryStrings);
         rs.next();
-        String ActionCounter = rs.getString(1);
+        String ActionCounter = rs.getString(2);
         int ActionCounter_int = Integer.valueOf(ActionCounter);
         ActionCounter_int++;
         ActionReplace = Integer.toString(ActionCounter_int);
@@ -100,11 +100,15 @@ public class ActionItemsController {
         emailMessage += this.getCreationDate() + ". The current status of this ticket is: " + this.getStatus() + ". The manager responsible is ";
         emailMessage += this.getResponsibleManager() + ". Additional Notes: " + this.getNotes();
         emailServices.sendMailAccess(("New Action Item, ID: " + this.getactionId()), emailMessage);
-        return "Successful addition of row";
+        HashMap<String, String> action_maps = new HashMap<String, String>();
+        action_maps.put("id", getactionId());
+        return action_maps;
     }
     catch(Exception exception)
     {
-        return exception.toString();
+        HashMap<String, String> action_map = new HashMap<String, String>();
+        action_map.put("Error", "Row not created: "+exception);
+        return action_map;
     }
     }
 
