@@ -82,7 +82,7 @@ public class GuestController {
         this.setResidentName(guestList.get("residentName"));
         this.setAllowedStartTime(guestList.get("allowedStartTime"));
         this.setAllowedEndTime(guestList.get("allowedEndTime"));
-        this.setReason(guestList.get.("reason"));
+        this.setReason(guestList.get("reason"));
 
         Class.forName("com.mysql.jdbc.Driver");
         Connection cons = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/guests", "test", "testtest");
