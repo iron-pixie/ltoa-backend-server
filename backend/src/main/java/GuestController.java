@@ -79,10 +79,10 @@ public class GuestController {
         this.setResidentAddress(guestList.get("residentAddress"));
         this.setCarModel(guestList.get("carMake"));
         this.setCarMake(guestList.get("carModel"));
-        this.setResidentName("residentName");
-        this.setAllowedStartTime("allowedStartTime");
-        this.setAllowedEndTime("allowedEndTime");
-        this.setReason("reason");
+        this.setResidentName(guestList.get("residentName"));
+        this.setAllowedStartTime(guestList.get("allowedStartTime"));
+        this.setAllowedEndTime(guestList.get("allowedEndTime"));
+        this.setReason(guestList.get.("reason"));
 
         Class.forName("com.mysql.jdbc.Driver");
         Connection cons = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/guests", "test", "testtest");

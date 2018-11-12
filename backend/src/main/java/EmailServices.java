@@ -190,9 +190,9 @@ public class EmailServices {
             String name = rs.getString(1);
 
             Connection con2 = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/members", "test", "testtest");
-            Statement stmt2 = con.createStatement();
+            Statement stmt2 = con2.createStatement();
             String queryString2 = "select * from Members where memberName = '" + name + "'";
-            ResultSet rs2 = stmt.executeQuery(queryString);
+            ResultSet rs2 = stmt2.executeQuery(queryString2);
             rs2.next();
             return rs2.getString(4);
 
