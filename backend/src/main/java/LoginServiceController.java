@@ -36,6 +36,7 @@ public class LoginServiceController {
     public HashMap<String, String> LoginRequest(@RequestBody HashMap<String, String> loginData) throws Exception
     {
         HashMap<String, String> login_map = new HashMap<String, String>();
+        HashMap<String, String> resident_map = new HashMap<String, String>();
         HashMap<String, String> login_response = new HashMap<String, String>();
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -45,6 +46,7 @@ public class LoginServiceController {
             ResultSet rs = stmt.executeQuery(queryString);
             rs.next();
             login_map.put("Name", rs.getString(1));
+            setUserLevel(rs.getString(2));
             login_map.put("userLevel", rs.getString(2));
             login_map.put("userName", rs.getString(3));
             login_map.put("password", rs.getString(4));
@@ -63,6 +65,28 @@ public class LoginServiceController {
 
         login_response.put("Auth", "Success");
         login_response.put("userLevel", login_map.get("userLevel"));
+        try {
+            if (userLevel.equals("resident")) {
+                Connection con1 = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/members", "test", "testtest");
+                Statement stmt1 = con1.createStatement();
+                String queryString1 = "select * from Members where memberName = '" + login_map.get("Name") + "'";
+                ResultSet rs1 = stmt1.executeQuery(queryString1);
+                rs1.next();
+                resident_map.put("Name", rs1.getString(1));
+                resident_map.put("Address", rs1.getString(2));
+                login_response.put("memberName", resident_map.get("Name"));
+                login_response.put("memberAddress", resident_map.get("Address"));
+            }
+        }
+        catch(Exception e)
+        {
+            login_response.put("Auth", "Server Error!");
+            login_response.put("Error", e.toString());
+            return login_response;
+        }
+
+
+
         return login_response;
     }
 

@@ -30,7 +30,6 @@ public class GuestController {
     private String carModel;
     private String carMake;
     private String guests;
-    private String mostRecentEntry;
     private String entryTime;
     private String reason;
     private DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -56,8 +55,7 @@ public class GuestController {
             guest_remap.put("residentName", rs.getString(5));
             guest_remap.put("allowedStartTime", rs.getString(6));
             guest_remap.put("allowedEndTime", rs.getString(7));
-            guest_remap.put("mostRecentEntry", rs.getString(8));
-            guest_remap.put("reason", rs.getString(9));
+            guest_remap.put("reason", rs.getString(8));
             guest_map_array.add(guest_remap);
         }
 
@@ -84,7 +82,6 @@ public class GuestController {
         this.setResidentName("residentName");
         this.setAllowedStartTime("allowedStartTime");
         this.setAllowedEndTime("allowedEndTime");
-        this.setMostRecentEntry("mostRecentEntry");
         this.setReason("reason");
 
         Class.forName("com.mysql.jdbc.Driver");
@@ -202,8 +199,6 @@ public class GuestController {
 
     private String getAllowedEndTime() {return this.allowedEndTime;}
 
-    private String getMostRecentEntry() {return this.mostRecentEntry;}
-
     private String getEntryTime() {return this.entryTime;}
 
     private String getReason() {return this.reason;}
@@ -215,8 +210,6 @@ public class GuestController {
     private void setAllowedStartTime(String AllowedStartTime) {this.allowedStartTime = AllowedStartTime;}
 
     private void setAllowedEndTime(String AllowedEndTime) {this.allowedEndTime = AllowedEndTime;}
-
-    private void setMostRecentEntry(String MostRecentEntry) {this.mostRecentEntry = MostRecentEntry;}
 
     private void setEntryTime(String EntryTime) {this.entryTime = EntryTime;}
 
