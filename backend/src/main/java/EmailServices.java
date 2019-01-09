@@ -178,7 +178,7 @@ public class EmailServices {
         return "Message Not Sent";
     }
 
-    public String selectEmail(String userName)
+    public String selectMail(String userName)
     {
         try {
             Class.forName("com.mysql.jdbc.Driver");

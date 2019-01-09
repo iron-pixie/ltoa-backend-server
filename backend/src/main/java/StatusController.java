@@ -46,7 +46,7 @@ public class StatusController {
     public String EmailNameRequest(@RequestBody String userName)
     {
         EmailServices emailServices = new EmailServices();
-        return emailServices.selectEmail(userName);
+        return emailServices.selectMail(userName);
     }
 
     public void setStatus(String status){

@@ -133,7 +133,7 @@ public class WorkOrdersController {
         String emailMessage = "A new Work orderhas been created with ID: " + this.getworkId() + ". The type of Work Order is " + this.getworkType() + ". The ticket was created at ";
         emailMessage += this.getCreationDate() + ". The current status of this ticket is: " + this.getStatus() + ". The manager responsible is ";
         emailMessage += this.getResponsibleManager() + ". Additional Notes: " + this.getNotes();
-        emailServices.sendMailAccess(("New Work Order, ID: " + this.getworkId()), emailMessage);
+        emailServices.sendMailAccess(("New Work Order, ID: " + this.getworkId()), emailMessage, emailServices.selectMail(workList.get("userName")));
         HashMap<String, String> work_maps = new HashMap<String, String>();
         work_maps.put("id", this.getworkId());
         return work_maps;

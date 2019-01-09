@@ -102,14 +102,132 @@ public class LoginServiceController {
         this.setPassword(loginList.get("Password"));
 
         Class.forName("com.mysql.jdbc.Driver");
-        Connection cons = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/users", "test", "testtest");
-        Statement stmts = cons.createStatement();
+        Connection cons = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/pending_users", "test", "testtest");
+        Statement stmt1 = cons.createStatement();
+        String queryString1 = "select * from Users where userName = '" + loginList.get("userName") + "'";
+        ResultSet rs1 = stmt1.executeQuery(queryString1);
+        if(rs1.next())
+        {
+            return "Username already exists";
+        }
+        else
+        {
+            Statement stmts = cons.createStatement();
+            String queryString = "insert into Users(Name, userLevel, userName, password)  values ('" + this.getName() + "', '" + this.getUserLevel() + "', '" + this.getUserName() + "', '" + this.getPassword() + "')";
+            stmts.executeUpdate(queryString);
+            EmailServices emailServices = new EmailServices();
+            String emailMessage = "A new user has been added and is awaiting approval with name: " + this.getName() + "The user has a level of:  " + this.getUserLevel();
+            emailServices.sendMailAccess(("New User, Name: " + this.getName()), emailMessage, emailServices.selectMail(loginList.get("userName")));
+            return "Successful addition of row";
+        }
+    }
+    catch(Exception exception)
+    {
+        return exception.toString();
+    }
+    }
+
+    private void deletePendingUser(String name)
+    {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/pending_users", "test", "testtest");
+            Statement stmt = con.createStatement();
+            String queryString = "delete from Users where Name = '" + name + "'";
+            stmt.executeUpdate(queryString);
+        }
+        catch(Exception exception)
+        {
+
+        }
+    }
+
+    @CrossOrigin(origins = "*")
+    @RequestMapping(value = "/deny-user", method = RequestMethod.POST)
+    @ResponseBody
+    public String deleteUser(@RequestBody HashMap<String, String> loginList)
+    {
+        try {
+            deletePendingUser(loginList.get("Name"));
+        }
+        catch(Exception exception)
+        {
+            return exception.toString();
+        }
+        return "Awaiting User deleted";
+    }
+
+    @CrossOrigin(origins = "*")
+    @RequestMapping(value = "/accept-user", method = RequestMethod.POST)
+    @ResponseBody
+    public String acceptUser(@RequestBody HashMap<String, String> loginList)
+    {  try {
+
+        this.setName(loginList.get("Name"));
+        this.setUserName(loginList.get("userName"));
+
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection cons = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/pending_users", "test", "testtest");
+        Statement stmt1 = cons.createStatement();
+        String queryString1 = "select * from Users where userName = '" + loginList.get("userName") + "'";
+        ResultSet rs1 = stmt1.executeQuery(queryString1);
+        rs1.next();
+        loginList.put("userLevel", rs1.getString(2));
+        loginList.put("password", rs1.getString(4));
+
+        this.setUserLevel(loginList.get("userLevel"));
+        this.setPassword(loginList.get("password"));
+
+        Connection cons1 = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/users", "test", "testtest");
+        Statement stmts = cons1.createStatement();
         String queryString = "insert into Users(Name, userLevel, userName, password)  values ('" + this.getName() + "', '" + this.getUserLevel() + "', '" + this.getUserName() + "', '" + this.getPassword() + "')";
         stmts.executeUpdate(queryString);
+        deletePendingUser(this.getName());
         EmailServices emailServices = new EmailServices();
         String emailMessage = "A new user has been added with name: " + this.getName() + "The user has a level of:  " + this.getUserLevel();
-        emailServices.sendMailAccess(("New User, Name: " + this.getName()), emailMessage);
+        emailServices.sendMailAccess(("New User, Name: " + this.getName()), emailMessage, emailServices.selectMail(loginList.get("userName")));
         return "Successful addition of row";
+    }
+    catch(Exception exception)
+    {
+        return exception.toString();
+    }
+    }
+
+    @CrossOrigin(origins = "*")
+    @RequestMapping(value = "/login/update", method = RequestMethod.POST)
+    @ResponseBody
+    public String LoginUpdate(@RequestBody HashMap<String, String> loginList)
+    {  try {
+        this.setUserName(loginList.get("userName"));
+        this.setPassword(loginList.get("Password"));
+
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection cons = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/users", "test", "testtest");
+        Statement stmts = cons.createStatement();
+        String queryString = "update Users set password = '" + this.getPassword() + "' where username = '" + this.getUserName() + "'";
+        stmts.executeUpdate(queryString);
+        return "Successful password change";
+        }
+    catch(Exception exception)
+    {
+        return exception.toString();
+    }
+    }
+
+    @CrossOrigin(origins = "*")
+    @RequestMapping(value = "/report-a-problem", method = RequestMethod.POST)
+    @ResponseBody
+    public String ReportAProlem(@RequestBody HashMap<String, String> problemList)
+    {  try {
+        this.setUserName(problemList.get("userName"));
+        String EmailAddress = problemList.get("emailAddress");
+        String problem = problemList.get("issue");
+
+        EmailServices emailServices = new EmailServices();
+        String emailMessage = "A new issue has been found by: " + this.getUserName() + "Their email address is:  " + EmailAddress + ". The issue they found is: " + problem;
+        emailServices.sendMailAccess("New Issue: ", emailMessage, "support@ironpixietechnologies.com");
+        return "Successful submission of issue";
     }
     catch(Exception exception)
     {

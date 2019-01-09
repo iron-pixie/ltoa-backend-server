@@ -91,7 +91,7 @@ public class GuestController {
         stmts.executeUpdate(queryString);
         EmailServices emailServices = new EmailServices();
         String emailMessage = "A new guest has been added with name: " + this.getGuestName() + "They are associated with address: " + this.getResidentAddress();
-        emailServices.sendMailAccess(("New Guest, Name: " + this.getGuestName()), emailMessage);
+        emailServices.sendMailAccess(("New Guest, Name: " + this.getGuestName()), emailMessage, emailServices.selectMail(guestList.get("userName")));
         return "Successful addition of row";
     }
     catch(Exception exception)
@@ -99,6 +99,69 @@ public class GuestController {
         return exception.toString();
     }
     }
+
+    @CrossOrigin(origins = "*")
+    @RequestMapping(value = "/guest/add-group", method = RequestMethod.POST)
+    @ResponseBody
+    public String guestMultiAdd(@RequestBody ArrayList<HashMap<String, String>> guestMultiList)
+    {  try {
+        this.setResidentAddress(guestMultiList.get(0).get("residentAddress"));
+        this.setResidentName(guestMultiList.get(0).get("residentName"));
+        this.setAllowedStartTime(guestMultiList.get(0).get("allowedStartTime"));
+        this.setAllowedEndTime(guestMultiList.get(0).get("allowedEndTime"));
+        this.setReason(guestMultiList.get(0).get("reason"));
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection cons = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/guests", "test", "testtest");
+        Statement stmts = cons.createStatement();
+        for(int i = 1; i < guestMultiList.size(); i++)
+        {
+            this.setGuestName(guestMultiList.get(i).get("guestName"));
+            String queryString = "insert into Guests(guestName, residentAddress, carModel, carMake, residentName, allowedStartTime, allowedEndTime, reason)  values ('" + this.getGuestName() + "', '" + this.getResidentAddress() + "', '" + this.getCarModel() + "', '" + this.getCarMake() + "', '" + this.getResidentName() + "', '" + this.getAllowedStartTime() + "', '" + this.getAllowedEndTime() + "', '" + this.getReason() + "')";
+            stmts.executeUpdate(queryString);
+        }
+        EmailServices emailServices = new EmailServices();
+        String emailMessage = "A new guest has been added with name: " + this.getGuestName() + "They are associated with address: " + this.getResidentAddress();
+        emailServices.sendMailAccess(("New Guest, Name: " + this.getGuestName()), emailMessage, emailServices.selectMail(guestMultiList.get(0).get("userName")));
+        return "Successful addition of row";
+    }
+    catch(Exception exception)
+    {
+        return exception.toString();
+    }
+    }
+
+    @CrossOrigin(origins = "*")
+    @RequestMapping(value = "/guest/update", method = RequestMethod.POST)
+    @ResponseBody
+    public String guestUpdate(@RequestBody HashMap<String, String> guestList)
+    {  try {
+
+        this.setGuestName(guestList.get("guestName"));
+        this.setResidentAddress(guestList.get("residentAddress"));
+        this.setCarModel(guestList.get("carMake"));
+        this.setCarMake(guestList.get("carModel"));
+        this.setResidentName(guestList.get("residentName"));
+        this.setAllowedStartTime(guestList.get("allowedStartTime"));
+        this.setAllowedEndTime(guestList.get("allowedEndTime"));
+        this.setReason(guestList.get("reason"));
+
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection cons = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/guests", "test", "testtest");
+        Statement stmts = cons.createStatement();
+        String queryString = "update Guests set residentAddress = '" + this.getResidentAddress() + ", carModel = '" + this.getCarModel() + "', carMake = '" + this.getCarMake() +  "', residentName = '" + this.getResidentName() + "', allowedStartTime = '" + this.getAllowedStartTime() +  "', allowedEndTime = '" + this.getAllowedEndTime() +  "', reason = '" + this.getReason() + "' where guestName = '" + this.getGuestName() + "'";
+        stmts.executeUpdate(queryString);
+        EmailServices emailServices = new EmailServices();
+        String emailMessage = "A guest has been updated with name: " + this.getGuestName() + "They are associated with address: " + this.getResidentAddress();
+        emailServices.sendMailAccess(("Guest, Name: " + this.getGuestName()), emailMessage, emailServices.selectMail(guestList.get("userName")));
+        return "Successful update of row";
+    }
+    catch(Exception exception)
+    {
+        return exception.toString();
+    }
+    }
+
+
 
     @CrossOrigin(origins = "*")
     @RequestMapping(value = "/register", method = RequestMethod.POST)
@@ -118,7 +181,7 @@ public class GuestController {
         stmts.executeUpdate(queryString);
         EmailServices emailServices = new EmailServices();
         String emailMessage = "A new guest has passed the gate and registered with the guards with name: " + this.getGuestName() + "They are associated with address: " + this.getResidentAddress() + ". And the time of entry was: "+this.getEntryTime();
-        emailServices.sendMailAccess(("Guest, Name: " + this.getGuestName()), emailMessage);
+        emailServices.sendMailAccess(("Guest, Name: " + this.getGuestName()), emailMessage, emailServices.selectMail(registerMap.get("userName")));
         return "Successful addition of row";
     }
     catch(Exception exception)
@@ -160,6 +223,7 @@ public class GuestController {
     @RequestMapping(value = "/guest/delete/{guestName}", method = RequestMethod.DELETE)
     public String GuestsRequestDelete(@PathVariable("guestName") String guestName)
     {  try {
+        guestName.replace("%", " ");
         Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/guests", "test", "testtest");
         Statement stmt=con.createStatement();

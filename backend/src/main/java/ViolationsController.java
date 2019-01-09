@@ -180,7 +180,7 @@ public class ViolationsController {
         String emailMessage = "A new Violation has been created with ID: " + this.getViolationId() + "The violation is a " + this.getViolationType() + ". This violation is for the residence at " + this.getMemberAddress() + ". The violation ticket was created at ";
         emailMessage += this.getCreationDate() + ". The fine for the violation is: " + this.getFine() + ". The current status of this violation ticket is: " + this.getStatus() + ". The manager responsible is ";
         emailMessage += this.getResponsibleManager() + ". Additional Notes: " + this.getNotes();
-        emailServices.sendMailAccess(("New Violation, ID: " + this.getViolationId()), emailMessage);
+        emailServices.sendMailAccess(("New Violation, ID: " + this.getViolationId()), emailMessage, emailServices.selectMail(violationList.get("userName")));
         HashMap<String, String> violation_maps = new HashMap<String, String>();
         violation_maps.put("id", this.getViolationId());
         return violation_maps;
