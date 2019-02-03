@@ -126,7 +126,7 @@ public class MemberController {
         Statement stmt = con.createStatement();
         Statement stmtD = con.createStatement();
 
-        String queryStringD = "delete from Intructions where Name = " + getmemberName();
+        String queryStringD = "delete from Intructions where Name = '" + getmemberName() + "'";
         stmtD.executeUpdate(queryStringD);
 
         String queryString = "insert into Intructions(Name, specialInstructions)  values('" + this.getmemberName() + "', '" + this.getSpecialInstructs() + "')";

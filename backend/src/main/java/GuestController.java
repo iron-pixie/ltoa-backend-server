@@ -148,7 +148,7 @@ public class GuestController {
         Class.forName("com.mysql.jdbc.Driver");
         Connection cons = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/guests", "test", "testtest");
         Statement stmts = cons.createStatement();
-        String queryString = "update Guests set residentAddress = '" + this.getResidentAddress() + ", carModel = '" + this.getCarModel() + "', carMake = '" + this.getCarMake() +  "', residentName = '" + this.getResidentName() + "', allowedStartTime = '" + this.getAllowedStartTime() +  "', allowedEndTime = '" + this.getAllowedEndTime() +  "', reason = '" + this.getReason() + "' where guestName = '" + this.getGuestName() + "'";
+        String queryString = "update Guests set residentAddress = '" + this.getResidentAddress() + "', carModel = '" + this.getCarModel() + "', carMake = '" + this.getCarMake() +  "', residentName = '" + this.getResidentName() + "', allowedStartTime = '" + this.getAllowedStartTime() +  "', allowedEndTime = '" + this.getAllowedEndTime() +  "', reason = '" + this.getReason() + "' where guestName = '" + this.getGuestName() + "'";
         stmts.executeUpdate(queryString);
         EmailServices emailServices = new EmailServices();
         String emailMessage = "A guest has been updated with name: " + this.getGuestName() + "They are associated with address: " + this.getResidentAddress();
@@ -204,7 +204,7 @@ public class GuestController {
         {
             HashMap<String, String> guest_remap = new HashMap<String, String>();
             guest_remap.put("guestName", rs.getString(1));
-            guest_remap.put("residentAddress", rs.getString(2));
+            guest_remap.put("residentAddress", rs.getString(3));
             guest_remap.put("residentName", rs.getString(2));
             guest_remap.put("entryTime", rs.getString(4));
             guest_map_array.add(guest_remap);
@@ -220,14 +220,13 @@ public class GuestController {
     }
 
     @CrossOrigin(origins = "*")
-    @RequestMapping(value = "/guest/delete/{guestName}", method = RequestMethod.DELETE)
-    public String GuestsRequestDelete(@PathVariable("guestName") String guestName)
+    @RequestMapping(value = "/guest/delete", method = RequestMethod.POST)
+    public String GuestsRequestDelete(@RequestBody HashMap<String, String> guestName)
     {  try {
-        guestName.replace("%", " ");
         Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/guests", "test", "testtest");
         Statement stmt=con.createStatement();
-        String queryString = "delete from Guests where guestName = " + guestName;
+        String queryString = "delete from Guests where guestName = '" + guestName.get("guestName") + "'";
         stmt.executeUpdate(queryString);
         return "Successful Deletion of Row";
     }
