@@ -28,6 +28,9 @@ public class MemberController {
     private String memberAddress = null;
     private String contactNumber = null;
     private String email = null;
+    private Connection con = null;
+    private Connection cons = null;
+    private Connection con2 = null;
 
     @CrossOrigin(origins = "*")
     @RequestMapping(value = "/member/search", method = RequestMethod.POST)
@@ -36,7 +39,7 @@ public class MemberController {
         String Name = Name_map.get("memberName");
         HashMap<String, String> member_map = new HashMap<String, String>();
         Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/members", "test", "testtest");
+        con = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/members", "test", "testtest");
         Statement stmt=con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         MemberController obj = (MemberController) context.getBean("memberBean");
@@ -47,11 +50,12 @@ public class MemberController {
         member_map.put("memberAddress", rs.getString(2));
         member_map.put("contactNumber", rs.getString(3));
         member_map.put("email", rs.getString(4));
+        con.close();
         return member_map;
     }
     catch(Exception exception)
     {
-        member_map.put("Error", exception.toString());
+        member_map.put("Error", exception.toString());;
         return member_map;
     }
     }
@@ -63,13 +67,14 @@ public class MemberController {
         String Name = Name_map.get("memberName");
         HashMap<String, String> member_map = new HashMap<String, String>();
         Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/members", "test", "testtest");
+        con = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/members", "test", "testtest");
         Statement stmt=con.createStatement();
         String queryString = "select * from Intructions where Name = '" + Name + "'";
         ResultSet rs = stmt.executeQuery(queryString);
         rs.next();
         member_map.put("Name", rs.getString(1));
         member_map.put("specialInstructions", rs.getString(2));
+        con.close();
         return member_map;
     }
     catch(Exception exception)
@@ -90,7 +95,7 @@ public class MemberController {
         this.setemail(memberList.get("email"));
         members = "";
         Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/members", "test", "testtest");
+        con = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/members", "test", "testtest");
         Statement stmt = con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         MemberController obj = (MemberController) context.getBean("memberBean");
@@ -103,6 +108,7 @@ public class MemberController {
         emailServices.sendMailAccess(("New member , Name: " + this.getmemberName()), emailMessage);
         HashMap<String, String> member_maps = new HashMap<String, String>();
         member_maps.put("Name", getmemberName());
+        con.close();
         return member_maps;
     }
     catch(Exception exception)
@@ -122,7 +128,7 @@ public class MemberController {
         this.setSpecialInstructs(memberList.get("specialInstructions"));;
         members = "";
         Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/members", "test", "testtest");
+        con = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/members", "test", "testtest");
         Statement stmt = con.createStatement();
         Statement stmtD = con.createStatement();
 
@@ -133,6 +139,7 @@ public class MemberController {
         stmt.executeUpdate(queryString);
         HashMap<String, String> member_maps = new HashMap<String, String>();
         member_maps.put("Name", getmemberName());
+        con.close();
         return member_maps;
     }
     catch(Exception exception)
@@ -154,31 +161,45 @@ public class MemberController {
         this.setemail(memberList.get("email"));
         members = "";
         Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/members", "test", "testtest");
+        con = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/members", "test", "testtest");
         Statement stmt = con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         MemberController obj = (MemberController) context.getBean("memberBean");
         //Needs to be set for null values
-        String queryString = "update Members ";
+        String queryString = "update Members set";
 
         if(getmemberAddress() != null)
         {
-            queryString += "set memberAddress = '" + this.getmemberAddress();
+            queryString += " memberAddress = '" + this.getmemberAddress();
         }
-        if(getmemberAddress() != null)
+        if(this.getContactNumber() != null)
         {
-            queryString += "', contactNumber = '" + this.getContactNumber();
+            if(getmemberAddress() == null)
+            {
+                queryString += " contactNumber = '" + this.getContactNumber();
+            }
+            else
+            {
+                queryString += "', contactNumber = '" + this.getContactNumber();
+            }
         }
-        if(getmemberAddress() != null)
+        if(this.getemail() != null)
         {
-            queryString += "', email = '" + this.getemail();
+            if(getmemberAddress() == null && this.getContactNumber() == null)
+            {
+                queryString += " email = '" + this.getemail();
+            }
+            else
+            {
+                queryString += "', email = '" + this.getemail();
+            }
         }
         queryString += "' where memberName = '" + this.getmemberName() + "'";
-
-         stmt.executeUpdate(queryString);
+        stmt.executeUpdate(queryString);
 
         HashMap<String, String> member_maps = new HashMap<String, String>();
         member_maps.put("Name", getmemberName());
+        con.close();
         return member_maps;
     }
     catch(Exception exception)
@@ -197,12 +218,13 @@ public class MemberController {
         String Name = Name_map.get("memberName");
         members = "";
         Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/members", "test", "testtest");
+        con = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/members", "test", "testtest");
         Statement stmt=con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         MemberController obj = (MemberController) context.getBean("memberBean");
         String queryString = "delete from Members where memberName = " + Name;
         stmt.executeUpdate(queryString);
+        con.close();
         return "Successful Deletion of Row";
     }
     catch(Exception exception)
@@ -219,7 +241,7 @@ public class MemberController {
         HashMap<String, String> member_map = new HashMap<String, String>();
         members = "";
         Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/members", "test", "testtest");
+        con = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/members", "test", "testtest");
         Statement stmt=con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         MemberController obj = (MemberController) context.getBean("memberBean");
@@ -233,6 +255,7 @@ public class MemberController {
             member_remap.put("email", rs.getString(4));
             member_map_array.add(member_remap);
         }
+        con.close();
         return member_map_array;
     }
     catch(Exception exception)
@@ -251,7 +274,7 @@ public class MemberController {
         HashMap<String, String> member_map = new HashMap<String, String>();
         members = "";
         Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/pending_users", "test", "testtest");
+        con = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/pending_users", "test", "testtest");
         Statement stmt=con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         MemberController obj = (MemberController) context.getBean("memberBean");
@@ -264,6 +287,7 @@ public class MemberController {
             member_remap.put("userName", rs.getString(3));
             member_map_array.add(member_remap);
         }
+        con.close();
         return member_map_array;
     }
     catch(Exception exception)

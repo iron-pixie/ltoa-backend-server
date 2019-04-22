@@ -30,6 +30,11 @@ public class LoginServiceController {
     String userLevel;
     String userName;
     String Password;
+    private Connection con = null;
+    private Connection cons = null;
+    private Connection con2 = null;
+    private Connection con1 = null;
+    private Connection cons1 = null;
 
     @CrossOrigin(origins = "*")
     @RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -40,7 +45,7 @@ public class LoginServiceController {
         HashMap<String, String> login_response = new HashMap<String, String>();
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/users", "test", "testtest");
+            con = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/users", "test", "testtest");
             Statement stmt = con.createStatement();
             String queryString = "select * from Users where userName = '" + loginData.get("username") + "'";
             ResultSet rs = stmt.executeQuery(queryString);
@@ -50,6 +55,7 @@ public class LoginServiceController {
             login_map.put("userLevel", rs.getString(2));
             login_map.put("userName", rs.getString(3));
             login_map.put("password", rs.getString(4));
+            con.close();
         }
         catch(Exception e)
         {
@@ -60,6 +66,7 @@ public class LoginServiceController {
         if(!(loginData.get("password").equals(login_map.get("password"))))
         {
             login_response.put("Auth", "ERROR: Invalid Password!");
+            con.close();
             return login_response;
         }
 
@@ -67,7 +74,7 @@ public class LoginServiceController {
         login_response.put("userLevel", login_map.get("userLevel"));
         try {
             if (userLevel.equals("resident")) {
-                Connection con1 = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/members", "test", "testtest");
+                con1 = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/members", "test", "testtest");
                 Statement stmt1 = con1.createStatement();
                 String queryString1 = "select * from Members where memberName = '" + login_map.get("Name") + "'";
                 ResultSet rs1 = stmt1.executeQuery(queryString1);
@@ -76,6 +83,7 @@ public class LoginServiceController {
                 resident_map.put("Address", rs1.getString(2));
                 login_response.put("memberName", resident_map.get("Name"));
                 login_response.put("memberAddress", resident_map.get("Address"));
+                con1.close();
             }
         }
         catch(Exception e)
@@ -84,9 +92,6 @@ public class LoginServiceController {
             login_response.put("Error", e.toString());
             return login_response;
         }
-
-
-
         return login_response;
     }
 
@@ -102,12 +107,13 @@ public class LoginServiceController {
         this.setPassword(loginList.get("Password"));
 
         Class.forName("com.mysql.jdbc.Driver");
-        Connection cons = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/pending_users", "test", "testtest");
+        cons = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/pending_users", "test", "testtest");
         Statement stmt1 = cons.createStatement();
         String queryString1 = "select * from Users where userName = '" + loginList.get("userName") + "'";
         ResultSet rs1 = stmt1.executeQuery(queryString1);
         if(rs1.next())
         {
+            cons.close();
             return "Username already exists";
         }
         else
@@ -118,6 +124,7 @@ public class LoginServiceController {
             EmailServices emailServices = new EmailServices();
             String emailMessage = "A new user has been added and is awaiting approval with name: " + this.getName() + "The user has a level of:  " + this.getUserLevel();
             emailServices.sendMailAccess(("New User, Name: " + this.getName()), emailMessage, emailServices.selectMail(loginList.get("userName")));
+            cons.close();
             return "Successful addition of row";
         }
     }
@@ -131,14 +138,14 @@ public class LoginServiceController {
     {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/pending_users", "test", "testtest");
+            con = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/pending_users", "test", "testtest");
             Statement stmt = con.createStatement();
             String queryString = "delete from Users where Name = '" + name + "'";
             stmt.executeUpdate(queryString);
+            con.close();
         }
         catch(Exception exception)
         {
-
         }
     }
 
@@ -167,7 +174,7 @@ public class LoginServiceController {
         this.setUserName(loginList.get("userName"));
 
         Class.forName("com.mysql.jdbc.Driver");
-        Connection cons = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/pending_users", "test", "testtest");
+        cons = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/pending_users", "test", "testtest");
         Statement stmt1 = cons.createStatement();
         String queryString1 = "select * from Users where userName = '" + loginList.get("userName") + "'";
         ResultSet rs1 = stmt1.executeQuery(queryString1);
@@ -178,7 +185,7 @@ public class LoginServiceController {
         this.setUserLevel(loginList.get("userLevel"));
         this.setPassword(loginList.get("password"));
 
-        Connection cons1 = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/users", "test", "testtest");
+        cons1 = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/users", "test", "testtest");
         Statement stmts = cons1.createStatement();
         String queryString = "insert into Users(Name, userLevel, userName, password)  values ('" + this.getName() + "', '" + this.getUserLevel() + "', '" + this.getUserName() + "', '" + this.getPassword() + "')";
         stmts.executeUpdate(queryString);
@@ -186,6 +193,8 @@ public class LoginServiceController {
         EmailServices emailServices = new EmailServices();
         String emailMessage = "A new user has been added with name: " + this.getName() + "The user has a level of:  " + this.getUserLevel();
         emailServices.sendMailAccess(("New User, Name: " + this.getName()), emailMessage, emailServices.selectMail(loginList.get("userName")));
+        cons.close();
+        cons1.close();
         return "Successful addition of row";
     }
     catch(Exception exception)
@@ -203,10 +212,11 @@ public class LoginServiceController {
         this.setPassword(loginList.get("Password"));
 
         Class.forName("com.mysql.jdbc.Driver");
-        Connection cons = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/users", "test", "testtest");
+        cons = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/users", "test", "testtest");
         Statement stmts = cons.createStatement();
         String queryString = "update Users set password = '" + this.getPassword() + "' where username = '" + this.getUserName() + "'";
         stmts.executeUpdate(queryString);
+        cons.close();
         return "Successful password change";
         }
     catch(Exception exception)

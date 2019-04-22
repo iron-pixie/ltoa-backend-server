@@ -29,6 +29,9 @@ public class GolfController {
     private String serialNumber = null;
     private String cartId = null;
     private String manager = null;
+    private Connection con = null;
+    private Connection cons = null;
+    private Connection con2 = null;
 
     private void setOwnerAddress(String ownerAddress)
     {
@@ -113,10 +116,10 @@ public class GolfController {
         HashMap<String, String> member_remap = new HashMap<String, String>();
 
         Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/carts", "test", "testtest");
+        con = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/carts", "test", "testtest");
         Statement stmt = con.createStatement();
 
-        Connection con2 = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/members", "test", "testtest");
+        con2 = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/members", "test", "testtest");
         Statement stmt2 = con.createStatement();
 
         String queryString = "insert into Carts(ownerAddress, cartMake, cartModel, serialNumber, labelNumber)  values ('" + this.getOwnerAddress() + "', '" + this.getCartMake() +  "', '" + this.getCartModel() + "', '" + this.getSerialNumber() + "', '" + this.getLabelNumber() + "')";
@@ -124,6 +127,9 @@ public class GolfController {
 
         HashMap<String, String> cart_maps = new HashMap<String, String>();
         cart_maps.put("Success", "Cart added succesfully!");
+        con.close();
+        cons.close();
+        con2.close();
         return cart_maps;
     }
     catch(Exception exception)
@@ -141,7 +147,7 @@ public class GolfController {
         ArrayList<HashMap<String, String>> cart_array = new ArrayList();
         HashMap<String, String> cart_map = new HashMap<String, String>();
         Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/carts", "test", "testtest");
+        con = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/carts", "test", "testtest");
         Statement stmt=con.createStatement();
         ResultSet rs = stmt.executeQuery("select * from Carts");
         while(rs.next())
@@ -154,6 +160,7 @@ public class GolfController {
             cart_remap.put("labelNumber", rs.getString(5));
             cart_array.add(cart_remap);
         }
+        con.close();
         return cart_array;
     }
     catch(Exception exception)
@@ -171,10 +178,11 @@ public class GolfController {
     public String GuestsRequestDelete(@RequestBody HashMap<String, String> serialNumber_map)
     {  try {
         Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/carts", "test", "testtest");
+        con = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/carts", "test", "testtest");
         Statement stmt=con.createStatement();
         String queryString = "delete from Carts where serialNumber = '" + serialNumber_map.get("serialNumber") + "'";
         stmt.executeUpdate(queryString);
+        con.close();
         return "Successful Deletion of Row";
     }
     catch(Exception exception)

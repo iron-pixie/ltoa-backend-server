@@ -31,6 +31,9 @@ public class ActionItemsController {
     private String Notes;
     private DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
     private Date date = new Date();
+    private Connection con = null;
+    private Connection cons = null;
+    private Connection con2 = null;
 
     @CrossOrigin(origins = "*")
     @RequestMapping(value = "/action/{id}")
@@ -38,7 +41,7 @@ public class ActionItemsController {
     {  try {
         HashMap<String, String> action_map = new HashMap<String, String>();
         Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/actions", "test", "testtest");
+        con = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/actions", "test", "testtest");
         Statement stmt=con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         ActionItemsController obj = (ActionItemsController) context.getBean("ActionBean");
@@ -51,6 +54,7 @@ public class ActionItemsController {
         action_map.put("CreationDate", rs.getString(4));
         action_map.put("Status", rs.getString(5));
         action_map.put("Notes", rs.getString(6));
+        con.close();
         return action_map;
     }
     catch(Exception exception)
@@ -74,7 +78,7 @@ public class ActionItemsController {
         Class.forName("com.mysql.jdbc.Driver");
 
         String ActionReplace = new String();
-        Connection cons = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/MetaData", "test", "testtest");
+        cons = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/MetaData", "test", "testtest");
         Statement stmts = cons.createStatement();
         String queryStrings = "select * from MetaData";
         ResultSet rs = stmts.executeQuery(queryStrings);
@@ -88,7 +92,7 @@ public class ActionItemsController {
         String queryStringss = "update MetaData set ActionCount = "+ ActionReplace + " where meta = meta";
         stmtss.executeUpdate(queryStringss);
 
-        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/actions", "test", "testtest");
+        con = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/actions", "test", "testtest");
         Statement stmt = con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         ActionItemsController obj = (ActionItemsController) context.getBean("ActionBean");
@@ -102,6 +106,8 @@ public class ActionItemsController {
         emailServices.sendMailAccess(("New Action Item, ID: " + this.getactionId()), emailMessage, emailServices.selectMail(actionList.get("userName")));
         HashMap<String, String> action_maps = new HashMap<String, String>();
         action_maps.put("id", getactionId());
+        con.close();
+        cons.close();
         return action_maps;
     }
     catch(Exception exception)
@@ -120,7 +126,7 @@ public class ActionItemsController {
         ArrayList<HashMap<String, String>> action_map_array = new ArrayList();
         HashMap<String, String> action_map = new HashMap<String, String>();
         Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/actions", "test", "testtest");
+        con = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/actions", "test", "testtest");
         Statement stmt=con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         ActionItemsController obj = (ActionItemsController) context.getBean("ActionBean");
@@ -137,6 +143,7 @@ public class ActionItemsController {
             action_remap.put("Notes", rs.getString(6));
             action_map_array.add(action_remap);
         }
+        con.close();
         return action_map_array;
     }
     catch(Exception exception)
@@ -154,12 +161,13 @@ public class ActionItemsController {
     {  try {
         actions = "";
         Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/actions", "test", "testtest");
+        con = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/actions", "test", "testtest");
         Statement stmt=con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         ActionItemsController obj = (ActionItemsController) context.getBean("ActionBean");
         String queryString = "delete from Actions where ActionId = " + id;
         stmt.executeUpdate(queryString);
+        con.close();
         return "Successful Deletion of Row";
     }
     catch(Exception exception)
@@ -176,7 +184,7 @@ public class ActionItemsController {
         HashMap<String, String> action_map = new HashMap<String, String>();
         actions = "";
         Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/actions", "test", "testtest");
+        con = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/actions", "test", "testtest");
         Statement stmt=con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         ActionItemsController obj = (ActionItemsController) context.getBean("ActionBean");
@@ -192,6 +200,7 @@ public class ActionItemsController {
             action_remap.put("Notes", rs.getString(6));
             action_map_array.add(action_remap);
         }
+        con.close();
         return action_map_array;
     }
     catch(Exception exception)

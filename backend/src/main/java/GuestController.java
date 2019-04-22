@@ -34,6 +34,9 @@ public class GuestController {
     private String reason;
     private DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
     private Date date = new Date();
+    private Connection con = null;
+    private Connection cons = null;
+    private Connection con2 = null;
 
     @CrossOrigin(origins = "*")
     @RequestMapping(value = "/guest/all")
@@ -42,7 +45,7 @@ public class GuestController {
         ArrayList<HashMap<String, String>> guest_map_array = new ArrayList();
         HashMap<String, String> guest_map = new HashMap<String, String>();
         Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/guests", "test", "testtest");
+        con = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/guests", "test", "testtest");
         Statement stmt=con.createStatement();
         ResultSet rs = stmt.executeQuery("select * from Guests");
         while(rs.next())
@@ -58,7 +61,7 @@ public class GuestController {
             guest_remap.put("reason", rs.getString(8));
             guest_map_array.add(guest_remap);
         }
-
+        con.close();
         return guest_map_array;
     }
     catch(Exception exception)
@@ -85,13 +88,14 @@ public class GuestController {
         this.setReason(guestList.get("reason"));
 
         Class.forName("com.mysql.jdbc.Driver");
-        Connection cons = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/guests", "test", "testtest");
+        cons = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/guests", "test", "testtest");
         Statement stmts = cons.createStatement();
         String queryString = "insert into Guests(guestName, residentAddress, carModel, carMake, residentName, allowedStartTime, allowedEndTime, reason)  values ('" + this.getGuestName() + "', '" + this.getResidentAddress() + "', '" + this.getCarModel() + "', '" + this.getCarMake() +  "', '" + this.getResidentName() + "', '" + this.getAllowedStartTime() +  "', '" + this.getAllowedEndTime() +  "', '" + this.getReason() + "')";
         stmts.executeUpdate(queryString);
         EmailServices emailServices = new EmailServices();
         String emailMessage = "A new guest has been added with name: " + this.getGuestName() + "They are associated with address: " + this.getResidentAddress();
         emailServices.sendMailAccess(("New Guest, Name: " + this.getGuestName()), emailMessage, emailServices.selectMail(guestList.get("userName")));
+        cons.close();
         return "Successful addition of row";
     }
     catch(Exception exception)
@@ -111,7 +115,7 @@ public class GuestController {
         this.setAllowedEndTime(guestMultiList.get(0).get("allowedEndTime"));
         this.setReason(guestMultiList.get(0).get("reason"));
         Class.forName("com.mysql.jdbc.Driver");
-        Connection cons = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/guests", "test", "testtest");
+        cons = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/guests", "test", "testtest");
         Statement stmts = cons.createStatement();
         for(int i = 1; i < guestMultiList.size(); i++)
         {
@@ -122,6 +126,7 @@ public class GuestController {
         EmailServices emailServices = new EmailServices();
         String emailMessage = "A new guest has been added with name: " + this.getGuestName() + "They are associated with address: " + this.getResidentAddress();
         emailServices.sendMailAccess(("New Guest, Name: " + this.getGuestName()), emailMessage, emailServices.selectMail(guestMultiList.get(0).get("userName")));
+        cons.close();
         return "Successful addition of row";
     }
     catch(Exception exception)
@@ -146,13 +151,14 @@ public class GuestController {
         this.setReason(guestList.get("reason"));
 
         Class.forName("com.mysql.jdbc.Driver");
-        Connection cons = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/guests", "test", "testtest");
+        cons = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/guests", "test", "testtest");
         Statement stmts = cons.createStatement();
         String queryString = "update Guests set residentAddress = '" + this.getResidentAddress() + "', carModel = '" + this.getCarModel() + "', carMake = '" + this.getCarMake() +  "', residentName = '" + this.getResidentName() + "', allowedStartTime = '" + this.getAllowedStartTime() +  "', allowedEndTime = '" + this.getAllowedEndTime() +  "', reason = '" + this.getReason() + "' where guestName = '" + this.getGuestName() + "'";
         stmts.executeUpdate(queryString);
         EmailServices emailServices = new EmailServices();
         String emailMessage = "A guest has been updated with name: " + this.getGuestName() + "They are associated with address: " + this.getResidentAddress();
         emailServices.sendMailAccess(("Guest, Name: " + this.getGuestName()), emailMessage, emailServices.selectMail(guestList.get("userName")));
+        cons.close();
         return "Successful update of row";
     }
     catch(Exception exception)
@@ -168,20 +174,23 @@ public class GuestController {
     @ResponseBody
     public String guestRegister(@RequestBody HashMap<String, String> registerMap)
     {  try {
+        dateFormat.setTimeZone(TimeZone.getTimeZone("CST"));
+        Date date1 = new Date();
 
         this.setGuestName(registerMap.get("guestName"));
         this.setResidentAddress(registerMap.get("residentAddress"));
         this.setResidentName(registerMap.get("residentName"));
-        this.setEntryTime(dateFormat.format(date));
+        this.setEntryTime(dateFormat.format(date1));
 
         Class.forName("com.mysql.jdbc.Driver");
-        Connection cons = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/guests", "test", "testtest");
+        cons = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/guests", "test", "testtest");
         Statement stmts = cons.createStatement();
         String queryString = "insert into Registry(guestName, residentAddress, residentName, entryTime)  values ('" + this.getGuestName() + "', '" + this.getResidentAddress() + "', '" + this.getResidentName() + "', '" + this.getEntryTime() + "')";
         stmts.executeUpdate(queryString);
         EmailServices emailServices = new EmailServices();
         String emailMessage = "A new guest has passed the gate and registered with the guards with name: " + this.getGuestName() + "They are associated with address: " + this.getResidentAddress() + ". And the time of entry was: "+this.getEntryTime();
         emailServices.sendMailAccess(("Guest, Name: " + this.getGuestName()), emailMessage, emailServices.selectMail(registerMap.get("userName")));
+        cons.close();
         return "Successful addition of row";
     }
     catch(Exception exception)
@@ -197,7 +206,7 @@ public class GuestController {
         ArrayList<HashMap<String, String>> guest_map_array = new ArrayList();
         HashMap<String, String> guest_map = new HashMap<String, String>();
         Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/guests", "test", "testtest");
+        con = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/guests", "test", "testtest");
         Statement stmt=con.createStatement();
         ResultSet rs = stmt.executeQuery("select * from Registry");
         while(rs.next())
@@ -209,6 +218,7 @@ public class GuestController {
             guest_remap.put("entryTime", rs.getString(4));
             guest_map_array.add(guest_remap);
         }
+        con.close();
         return guest_map_array;
     }
     catch(Exception exception)
@@ -224,10 +234,11 @@ public class GuestController {
     public String GuestsRequestDelete(@RequestBody HashMap<String, String> guestName)
     {  try {
         Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/guests", "test", "testtest");
+        con = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/guests", "test", "testtest");
         Statement stmt=con.createStatement();
         String queryString = "delete from Guests where guestName = '" + guestName.get("guestName") + "'";
         stmt.executeUpdate(queryString);
+        con.close();
         return "Successful Deletion of Row";
     }
     catch(Exception exception)

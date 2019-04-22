@@ -33,6 +33,9 @@ public class ViolationsController {
     private String Notes;
     private DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
     private Date date = new Date();
+    private Connection con = null;
+    private Connection cons = null;
+    private Connection con2 = null;
 
     @CrossOrigin(origins = "*")
     @RequestMapping(value = "/violation/{id}")
@@ -40,7 +43,7 @@ public class ViolationsController {
     {  try {
         HashMap<String, String> violation_map = new HashMap<String, String>();
         Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/violations", "test", "testtest");
+        con = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/violations", "test", "testtest");
         Statement stmt=con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         ViolationsController obj = (ViolationsController) context.getBean("ViolationBean");
@@ -55,6 +58,7 @@ public class ViolationsController {
         violation_map.put("Fine", rs.getString(6));
         violation_map.put("Status", rs.getString(7));
         violation_map.put("Notes", rs.getString(8));
+        con.close();
         return violation_map;
     }
     catch(Exception exception)
@@ -73,7 +77,7 @@ public class ViolationsController {
         ArrayList<HashMap<String, String>> work_map_array = new ArrayList();
         HashMap<String, String> work_map = new HashMap<String, String>();
         Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/violations", "test", "testtest");
+        con = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/violations", "test", "testtest");
         Statement stmt=con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         ViolationsController obj = (ViolationsController) context.getBean("ViolationBean");
@@ -92,6 +96,7 @@ public class ViolationsController {
             violation_remap.put("Notes", rs.getString(8));
             violation_map_array.add(violation_remap);
         }
+        con.close();
         return violation_map_array;
     }
     catch(Exception exception)
@@ -110,7 +115,7 @@ public class ViolationsController {
         ArrayList<HashMap<String, String>> work_map_array = new ArrayList();
         HashMap<String, String> work_map = new HashMap<String, String>();
         Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/violations", "test", "testtest");
+        con = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/violations", "test", "testtest");
         Statement stmt=con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         ViolationsController obj = (ViolationsController) context.getBean("ViolationBean");
@@ -129,6 +134,7 @@ public class ViolationsController {
             violation_remap.put("Notes", rs.getString(8));
             violation_map_array.add(violation_remap);
         }
+        con.close();
         return violation_map_array;
     }
     catch(Exception exception)
@@ -158,7 +164,7 @@ public class ViolationsController {
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         ViolationsController obj = (ViolationsController) context.getBean("ViolationBean");
 
-        Connection cons = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/MetaData", "test", "testtest");
+        cons = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/MetaData", "test", "testtest");
         Statement stmts = cons.createStatement();
         String queryStrings = "select * from MetaData";
         ResultSet rs = stmts.executeQuery(queryStrings);
@@ -172,7 +178,7 @@ public class ViolationsController {
         String queryStringss = "update MetaData set ViolationCount = "+ ViolationReplace + " where meta = meta";
         stmtss.executeUpdate(queryStringss);
 
-        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/violations", "test", "testtest");
+        con = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/violations", "test", "testtest");
         Statement stmt = con.createStatement();
         String queryString = "insert into Violations(ViolationId, ViolationType, MemberAddress, ResponsibleManager, CreationDate, Fine, Status, Notes)  values ('" + this.getViolationId() + "', '" + this.getViolationType() + "', '" + this.getMemberAddress() + "', '" + this.getResponsibleManager() + "', '" + this.getCreationDate() + "', '" + this.getFine() + "', '" + this.getStatus() + "', '" + this.getNotes() + "')";
         stmt.executeUpdate(queryString);
@@ -183,6 +189,8 @@ public class ViolationsController {
         emailServices.sendMailAccess(("New Violation, ID: " + this.getViolationId()), emailMessage, emailServices.selectMail(violationList.get("userName")));
         HashMap<String, String> violation_maps = new HashMap<String, String>();
         violation_maps.put("id", this.getViolationId());
+        con.close();
+        cons.close();
         return violation_maps;
     }
     catch(Exception exception)
@@ -194,17 +202,99 @@ public class ViolationsController {
     }
 
     @CrossOrigin(origins = "*")
+    @RequestMapping(value = "/violation/update", method = RequestMethod.POST)
+    @ResponseBody
+    public String violationUpdate(@RequestBody HashMap<String, String> violationList)
+    {  try {
+
+        this.setViolationId(violationList.get("ViolationId"));
+        this.setResponsibleManager(violationList.get("ResponsibleManager"));
+        this.setFine(violationList.get("Fine"));
+        this.setStatus(violationList.get("Status"));
+        this.setNotes(violationList.get("Notes"));
+        this.setMemberAddress(violationList.get("MemberAddress"));
+
+        Class.forName("com.mysql.jdbc.Driver");
+        cons = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/violations", "test", "testtest");
+        Statement stmts = cons.createStatement();
+        String queryString = "update Violations set";
+
+        if(getResponsibleManager() != null)
+        {
+            queryString += " ResponsibleManager = '" + this.getResponsibleManager();
+        }
+        if(getStatus() != null)
+        {
+            if(getResponsibleManager() == null)
+            {
+                queryString += " Status = '" + this.getStatus();
+            }
+            else
+            {
+                queryString += "', Status = '" + this.getStatus();
+            }
+
+        }
+        if(getNotes() != null)
+        {
+            if(getResponsibleManager() == null && getStatus() == null)
+            {
+                queryString += " Notes = '" + this.getNotes();
+            }
+            else
+            {
+                queryString += "', Notes = '" + this.getNotes();
+            }
+        }
+        if(getMemberAddress() != null)
+        {
+            if(getResponsibleManager() == null && getStatus() == null && getNotes() == null)
+            {
+                queryString += " MemberAddress = '" + this.getMemberAddress();
+            }
+            else
+            {
+                queryString += "', MemberAddress = '" + this.getMemberAddress();
+            }
+        }
+        if(getFine() != null)
+        {
+            if(getMemberAddress() == null && getStatus() == null && getNotes() == null && getResponsibleManager() == null)
+            {
+                queryString += " Fine = '" + this.getFine();
+            }
+            else
+            {
+                queryString += "', Fine = '" + this.getFine();
+            }
+        }
+
+        queryString += "' where ViolationId = '" + this.getViolationId() + "'";
+
+        stmts.executeUpdate(queryString);
+        EmailServices emailServices = new EmailServices();
+        cons.close();
+        return "Successful update of row";
+    }
+    catch(Exception exception)
+    {
+        return exception.toString();
+    }
+    }
+
+    @CrossOrigin(origins = "*")
     @RequestMapping(value = "/violation/{id}", method = RequestMethod.DELETE)
     public String ViolationsRequestDelete(@PathVariable("id") String id)
     {  try {
         violations = "";
         Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/violations", "test", "testtest");
+        con = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/violations", "test", "testtest");
         Statement stmt=con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         ViolationsController obj = (ViolationsController) context.getBean("ViolationBean");
         String queryString = "delete from Violations where ViolationId = " + id;
         stmt.executeUpdate(queryString);
+        con.close();
         return "Successful Deletion of Row";
     }
     catch(Exception exception)
@@ -221,7 +311,7 @@ public class ViolationsController {
         HashMap<String, String> violation_map = new HashMap<String, String>();
         violations = "";
         Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://aadnxib9b7f6cj.cebbknh24dty.us-west-2.rds.amazonaws.com:3306/violations", "test", "testtest");
+        con = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/violations", "test", "testtest");
         Statement stmt=con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         ViolationsController obj = (ViolationsController) context.getBean("ViolationBean");
@@ -239,6 +329,7 @@ public class ViolationsController {
             violation_remap.put("Notes", rs.getString(8));
             violation_map_array.add(violation_remap);
         }
+        con.close();
         return violation_map_array;
     }
     catch(Exception exception)
