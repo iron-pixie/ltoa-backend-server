@@ -119,17 +119,12 @@ public class GolfController {
         con = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/carts", "test", "testtest");
         Statement stmt = con.createStatement();
 
-        con2 = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/members", "test", "testtest");
-        Statement stmt2 = con.createStatement();
-
         String queryString = "insert into Carts(ownerAddress, cartMake, cartModel, serialNumber, labelNumber)  values ('" + this.getOwnerAddress() + "', '" + this.getCartMake() +  "', '" + this.getCartModel() + "', '" + this.getSerialNumber() + "', '" + this.getLabelNumber() + "')";
         stmt.executeUpdate(queryString);
 
         HashMap<String, String> cart_maps = new HashMap<String, String>();
         cart_maps.put("Success", "Cart added succesfully!");
         con.close();
-        cons.close();
-        con2.close();
         return cart_maps;
     }
     catch(Exception exception)
@@ -156,7 +151,7 @@ public class GolfController {
             cart_remap.put("ownerAddress", rs.getString(1));
             cart_remap.put("cartMake", rs.getString(2));
             cart_remap.put("cartModel", rs.getString(3));
-            cart_remap.put("serialnNumber", rs.getString(4));
+            cart_remap.put("serialNumber", rs.getString(4));
             cart_remap.put("labelNumber", rs.getString(5));
             cart_array.add(cart_remap);
         }
@@ -174,6 +169,8 @@ public class GolfController {
     }
     }
 
+
+    @CrossOrigin(origins = "*")
     @RequestMapping(value = "/cart/delete", method = RequestMethod.POST)
     public String GuestsRequestDelete(@RequestBody HashMap<String, String> serialNumber_map)
     {  try {

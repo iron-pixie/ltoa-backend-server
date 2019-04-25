@@ -119,6 +119,63 @@ public class ActionItemsController {
     }
 
     @CrossOrigin(origins = "*")
+    @RequestMapping(value = "/action/update", method = RequestMethod.POST)
+    @ResponseBody
+    public String workUpdate(@RequestBody HashMap<String, String> actionList)
+    {  try {
+
+        this.setactionId(actionList.get("actionId"));
+        this.setactionType(actionList.get("actionType"));
+        this.setResponsibleManager(actionList.get("ResponsibleManager"));
+        this.setCreationDate(dateFormat.format(date));
+        this.setStatus(actionList.get("Status"));
+        this.setNotes(actionList.get("Notes"));
+
+        Class.forName("com.mysql.jdbc.Driver");
+        cons = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/actions", "test", "testtest");
+        Statement stmts = cons.createStatement();
+
+        String queryString = "update Actions set";
+
+        if(getResponsibleManager() != null)
+        {
+            queryString += " ResponsibleManager = '" + this.getResponsibleManager();
+        }
+        if(getStatus() != null)
+        {
+            if(getResponsibleManager() == null)
+            {
+                queryString += " Status = '" + this.getStatus();
+            }
+            else
+            {
+                queryString += "', Status = '" + this.getStatus();
+            }
+        }
+        if(getNotes() != null) {
+            if (getStatus() == null && getResponsibleManager() == null) {
+                queryString += " Notes = '" + this.getNotes();
+            } else {
+                queryString += "', Notes = '" + this.getNotes();
+            }
+
+        }
+
+        queryString += "' where ActionId = '" + this.getactionId() + "'";
+
+
+        stmts.executeUpdate(queryString);
+        EmailServices emailServices = new EmailServices();
+        cons.close();
+        return "Successful update of row";
+    }
+    catch(Exception exception)
+    {
+        return exception.toString();
+    }
+    }
+
+    @CrossOrigin(origins = "*")
     @RequestMapping(value = "/action/manager-search", method = RequestMethod.POST)
     @ResponseBody
     public ArrayList<HashMap<String, String>> actionsRequestManager(@RequestBody HashMap<String, String> manager)

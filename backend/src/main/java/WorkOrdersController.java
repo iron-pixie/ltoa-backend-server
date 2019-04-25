@@ -136,7 +136,7 @@ public class WorkOrdersController {
         Statement stmt = con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         WorkOrdersController obj = (WorkOrdersController) context.getBean("WorkBean");
-        String queryString = "insert into Work(WorkId, WorkType, ResponsibleManager, CreationDate, Status, Notes, Address)  values ('" + this.getworkId() + "', '" + this.getworkType() +  "', '" + this.getResponsibleManager() + "', '" + this.getCreationDate() + "', '" + this.getStatus() + "', '" + this.getNotes() + "', " + this.getAddress() + "')";
+        String queryString = "insert into Work(WorkId, WorkType, ResponsibleManager, CreationDate, Status, Notes, Address)  values ('" + this.getworkId() + "', '" + this.getworkType() +  "', '" + this.getResponsibleManager() + "', '" + this.getCreationDate() + "', '" + this.getStatus() + "', '" + this.getNotes() + "', '" + this.getAddress() + "')";
         stmt.executeUpdate(queryString);
         EmailServices emailServices = new EmailServices();
         String emailMessage = "A new Work orderhas been created with ID: " + this.getworkId() + ". The type of Work Order is " + this.getworkType() + ". The ticket was created at ";

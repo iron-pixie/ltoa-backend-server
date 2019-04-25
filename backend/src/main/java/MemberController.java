@@ -36,14 +36,14 @@ public class MemberController {
     @RequestMapping(value = "/member/search", method = RequestMethod.POST)
     public HashMap<String, String> membersRequest(@RequestBody HashMap<String, String> Name_map)
     {  try {
-        String Name = Name_map.get("memberName");
+        String Address = Name_map.get("memberAddress");
         HashMap<String, String> member_map = new HashMap<String, String>();
         Class.forName("com.mysql.jdbc.Driver");
         con = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/members", "test", "testtest");
         Statement stmt=con.createStatement();
         ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
         MemberController obj = (MemberController) context.getBean("memberBean");
-        String queryString = "select * from Members where memberName = '" + Name + "'";
+        String queryString = "select * from Members where memberAddress = '" + Address + "'";
         ResultSet rs = stmt.executeQuery(queryString);
         rs.next();
         member_map.put("memberName", rs.getString(1));
@@ -64,12 +64,13 @@ public class MemberController {
     @RequestMapping(value = "/member/instructions/search", method = RequestMethod.POST)
     public HashMap<String, String> membersRequestInstructions(@RequestBody HashMap<String, String> Name_map)
     {  try {
-        String Name = Name_map.get("memberName");
+        String AddressS = Name_map.get("Address");
+
         HashMap<String, String> member_map = new HashMap<String, String>();
         Class.forName("com.mysql.jdbc.Driver");
         con = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/members", "test", "testtest");
         Statement stmt=con.createStatement();
-        String queryString = "select * from Intructions where Name = '" + Name + "'";
+        String queryString = "select * from Intructions where Address = '" + AddressS + "'";
         ResultSet rs = stmt.executeQuery(queryString);
         rs.next();
         member_map.put("Name", rs.getString(1));
@@ -125,17 +126,23 @@ public class MemberController {
     public HashMap<String, String> membersInstructionsAdd(@RequestBody HashMap<String, String> memberList)
     {  try {
         this.setmemberName(memberList.get("memberName"));
-        this.setSpecialInstructs(memberList.get("specialInstructions"));;
+        this.setmemberAddress(memberList.get("memberAddress"));
+        this.setSpecialInstructs(memberList.get("specialInstructions"));
         members = "";
         Class.forName("com.mysql.jdbc.Driver");
         con = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/members", "test", "testtest");
         Statement stmt = con.createStatement();
         Statement stmtD = con.createStatement();
+        Statement stmtM = con.createStatement();
 
-        String queryStringD = "delete from Intructions where Name = '" + getmemberName() + "'";
+        String queryStringM = "select * from Members where memberAddress = '" + getmemberAddress() + "'";
+        ResultSet rs = stmt.executeQuery(queryStringM);
+        rs.next();
+        this.setmemberName(rs.getString(1));
+
+        String queryStringD = "delete from Intructions where Address = '" + getmemberAddress() + "'";
         stmtD.executeUpdate(queryStringD);
-
-        String queryString = "insert into Intructions(Name, specialInstructions)  values('" + this.getmemberName() + "', '" + this.getSpecialInstructs() + "')";
+        String queryString = "insert into Intructions(Name, specialInstructions, Address)  values('" + this.getmemberName() + "', '" + this.getSpecialInstructs() + "', '" + this.getmemberAddress() + "')";
         stmt.executeUpdate(queryString);
         HashMap<String, String> member_maps = new HashMap<String, String>();
         member_maps.put("Name", getmemberName());
@@ -194,7 +201,7 @@ public class MemberController {
                 queryString += "', email = '" + this.getemail();
             }
         }
-        queryString += "' where memberName = '" + this.getmemberName() + "'";
+        queryString += "' where memberAddress = '" + this.getmemberAddress() + "'";
         stmt.executeUpdate(queryString);
 
         HashMap<String, String> member_maps = new HashMap<String, String>();

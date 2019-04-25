@@ -30,11 +30,13 @@ public class LoginServiceController {
     String userLevel;
     String userName;
     String Password;
+    String Address;
     private Connection con = null;
     private Connection cons = null;
     private Connection con2 = null;
     private Connection con1 = null;
     private Connection cons1 = null;
+    private Connection conl = null;
 
     @CrossOrigin(origins = "*")
     @RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -55,6 +57,7 @@ public class LoginServiceController {
             login_map.put("userLevel", rs.getString(2));
             login_map.put("userName", rs.getString(3));
             login_map.put("password", rs.getString(4));
+            login_map.put("Address", rs.getString(5));
             con.close();
         }
         catch(Exception e)
@@ -76,7 +79,7 @@ public class LoginServiceController {
             if (userLevel.equals("resident")) {
                 con1 = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/members", "test", "testtest");
                 Statement stmt1 = con1.createStatement();
-                String queryString1 = "select * from Members where memberName = '" + login_map.get("Name") + "'";
+                String queryString1 = "select * from Members where memberAddress = '" + login_map.get("Address") + "'";
                 ResultSet rs1 = stmt1.executeQuery(queryString1);
                 rs1.next();
                 resident_map.put("Name", rs1.getString(1));
@@ -105,28 +108,42 @@ public class LoginServiceController {
         this.setUserLevel(loginList.get("userLevel"));
         this.setUserName(loginList.get("userName"));
         this.setPassword(loginList.get("Password"));
+        this.setAddress(loginList.get("Address"));
+        if(this.getUserLevel() != "resident")
+        {
+            this.setAddress("Not Applicable");
+        }
 
         Class.forName("com.mysql.jdbc.Driver");
         cons = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/pending_users", "test", "testtest");
-        Statement stmt1 = cons.createStatement();
+        conl = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/users", "test", "testtest");
+        Statement stmt1 = conl.createStatement();
         String queryString1 = "select * from Users where userName = '" + loginList.get("userName") + "'";
         ResultSet rs1 = stmt1.executeQuery(queryString1);
         if(rs1.next())
         {
             cons.close();
+            conl.close();
             return "Username already exists";
         }
         else
         {
+            if(this.getUserLevel() != "resident")
+            {
+                this.setAddress("Not Applicable");
+            }
+
             Statement stmts = cons.createStatement();
-            String queryString = "insert into Users(Name, userLevel, userName, password)  values ('" + this.getName() + "', '" + this.getUserLevel() + "', '" + this.getUserName() + "', '" + this.getPassword() + "')";
+            String queryString = "insert into Users(Name, userLevel, userName, password, Address)  values ('" + this.getName() + "', '" + this.getUserLevel() + "', '" + this.getUserName() + "', '" + this.getPassword() + "', '" + this.getAddress() + "')";
             stmts.executeUpdate(queryString);
             EmailServices emailServices = new EmailServices();
             String emailMessage = "A new user has been added and is awaiting approval with name: " + this.getName() + "The user has a level of:  " + this.getUserLevel();
             emailServices.sendMailAccess(("New User, Name: " + this.getName()), emailMessage, emailServices.selectMail(loginList.get("userName")));
             cons.close();
+            conl.close();
             return "Successful addition of row";
         }
+
     }
     catch(Exception exception)
     {
@@ -181,13 +198,15 @@ public class LoginServiceController {
         rs1.next();
         loginList.put("userLevel", rs1.getString(2));
         loginList.put("password", rs1.getString(4));
+        loginList.put("Address", rs1.getString(5));
 
         this.setUserLevel(loginList.get("userLevel"));
         this.setPassword(loginList.get("password"));
+        this.setAddress(loginList.get("Address"));
 
         cons1 = DriverManager.getConnection("jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/users", "test", "testtest");
         Statement stmts = cons1.createStatement();
-        String queryString = "insert into Users(Name, userLevel, userName, password)  values ('" + this.getName() + "', '" + this.getUserLevel() + "', '" + this.getUserName() + "', '" + this.getPassword() + "')";
+        String queryString = "insert into Users(Name, userLevel, userName, password, Address)  values ('" + this.getName() + "', '" + this.getUserLevel() + "', '" + this.getUserName() + "', '" + this.getPassword() + "', '" + this.getAddress() + "')";
         stmts.executeUpdate(queryString);
         deletePendingUser(this.getName());
         EmailServices emailServices = new EmailServices();
@@ -264,6 +283,10 @@ public class LoginServiceController {
     {
         this.Password = password;
     }
+
+    private void setAddress(String address) {this.Address = address; }
+
+    private  String getAddress() {return this.Address; }
 
     private String getName()
     {
